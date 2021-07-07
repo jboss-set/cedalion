@@ -1,0 +1,120 @@
+def lookupLastSuccessfulBuildId(String parent_jobname) {
+  echo "Fetching last successful build ID of parent job:" + parent_jobname
+  def lastSuccessfulBuildId = sh(script:"/var/jenkins_home/fetchLastSuccessfulBuildId.sh ${parent_jobname}", returnStdout: true)
+  echo "PARENT JOB LAST SUCCESSFUL BUILD ID: " + lastSuccessfulBuildId
+  if ( "${lastSuccessfulBuildId}".equals("0") ) {
+    error("Build failed because parent job has never run.")
+  }
+  return lastSuccessfulBuildId.trim()
+}
+
+def saveParameters(String fileName) {
+    content = ""
+    params.each { p ->
+        content = content + "\n" + p.key + "=\"" + p.value + "\""
+    }
+    writeFile file: fileName, text: content
+}
+
+pipeline {
+    agent any
+
+   options {
+        buildDiscarder(logRotator(numToKeepStr: '100', artifactNumToKeepStr: '100'))
+     }
+
+    stages {
+        stage('Prep') {
+            steps {
+                cleanWs()
+                script {
+                    def lastSuccessfulBuildId = lookupLastSuccessfulBuildId('modspackage')
+                    assert lastSuccessfulBuildId.isNumber()
+                    
+                    def modsJobDir = "/var/jenkins_home/jobs/modspackage/builds/${lastSuccessfulBuildId}/archive"
+                    sh "cp -r ${modsJobDir}/mods.zip ."
+                }
+                script {
+                    def lastSuccessfulBuildId = lookupLastSuccessfulBuildId('buildcts')
+                    assert lastSuccessfulBuildId.isNumber()
+                    
+                    def tckJobDir = "/var/jenkins_home/jobs/buildcts/builds/${lastSuccessfulBuildId}/archive"
+                    sh "cp -r ${tckJobDir}/release/JAVAEE_BUILD/latest/jakartaeetck*.zip ."
+                }
+                script {
+                    def lastSuccessfulBuildId = lookupLastSuccessfulBuildId('glassfishpackage')
+                    assert lastSuccessfulBuildId.isNumber()
+                    
+                    def glassfishJobDir = "/var/jenkins_home/jobs/glassfishpackage/builds/${lastSuccessfulBuildId}/archive"
+                    sh "cp -r ${glassfishJobDir}/glassfish.zip ."
+                }
+                script {
+                    def lastSuccessfulBuildId = build_selector
+                    if (build_selector == "") {
+                        lastSuccessfulBuildId = lookupLastSuccessfulBuildId('appserver')
+                        assert lastSuccessfulBuildId.isNumber()
+                    }
+                    
+                    def appserverJobDir = "/var/jenkins_home/jobs/appserver/builds/${lastSuccessfulBuildId}/archive"
+                    sh "echo ${appserverJobDir}"
+                    sh "cp -r ${appserverJobDir}/build/target/wildfly.zip ."
+                }
+                
+                dir('hera') {
+                  git 'https://github.com/spyrkob/hera.git'
+                }
+                
+                dir('harmonia') {
+                  git url: 'https://github.com/spyrkob/harmonia.git',
+                      branch: 'tckdev'
+                }
+
+                script {
+                    if ( env.GIT_REPOSITORY_URL ) {
+                        dir('workdir') {
+                            git url: "${env.GIT_REPOSITORY_URL}",
+                                branch: "${env.GIT_REPOSITORY_BRANCH}"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Main') {
+            steps {
+                script {
+                    env.BUILD_SCRIPT = "${env.WORKSPACE}/${env.PATH_TO_SCRIPT}"
+                    env.WORKDIR = "${env.WORKSPACE}/"
+                    sh "curl ${env.DOWNLOAD_URL} --output ${env.DOWNLOAD_FILE}"
+
+                    if (env.WEBSOCKET_CONFIG_URL) {
+                        sh "curl -k ${env.WEBSOCKET_CONFIG_URL} --output ts.jte.wildfly"
+                    }
+                    if (env.WEBSOCKET_DEPLOY_URL) {
+                        sh "curl -k ${env.WEBSOCKET_DEPLOY_URL} --output deploy.xml"
+                    }
+
+                    saveParameters("props.sh")
+
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job"
+                    sh "ls -alF"
+                    archiveArtifacts artifacts: "${env.ARCHIVE_PATH}", fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+                    if (env.JUNIT_PATH) {
+                        junit "${env.JUNIT_PATH}"
+                    }
+               }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+             try {
+                  sh label: '', script: "${env.WORKSPACE}/hera/hera.sh stop"
+              } catch (err) {
+                  echo "Error while deleting container: ${err}"
+              }
+            }
+        }
+    }
+}

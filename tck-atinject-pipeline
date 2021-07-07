@@ -1,0 +1,66 @@
+def saveParameters(String fileName) {
+    content = ""
+    params.each { p ->
+        content = content + "\n" + p.key + "=\"" + p.value + "\""
+    }
+    writeFile file: fileName, text: content
+}
+
+pipeline {
+    agent any
+
+   options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+     }
+
+    stages {
+        stage('Prep') {
+            steps {
+                cleanWs()
+                
+                dir('hera') {
+                  git 'https://github.com/spyrkob/hera.git'
+                }
+                
+                dir('harmonia') {
+                  git url: 'https://github.com/spyrkob/harmonia.git',
+                      branch: 'tckdev'
+                }
+                
+                dir('injection-api') {
+                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'refs/tags/1.0']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/eclipse-ee4j/injection-api']]]
+                }
+                
+                dir('workdir') {
+                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '203fb8a069691bc78514791fc2b834ed4cab0f40']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/eclipse-ee4j/injection-tck']]]
+                }
+            }
+        }
+        stage('Main') {
+            steps {
+                script {
+                    env.BUILD_SCRIPT = "${env.WORKSPACE}/hera/mvn-wrapper.sh"
+                    env.WORKDIR = "${env.WORKSPACE}/workdir"
+                    content = ""
+                    params.each { p ->
+                        content = content + "\n" + p.key + "=\"" + p.value + "\""
+                    }
+                    writeFile file: "props.sh", text: content
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job"
+               }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+             try {
+                  sh label: '', script: "${env.WORKSPACE}/hera/hera.sh stop"
+              } catch (err) {
+                  echo "Error while deleting container: ${err}"
+              }
+            }
+        }
+    }
+}

@@ -1,0 +1,319 @@
+def void buildAppServer(String appserverconf) {
+    print "build app server params = $params"
+    b = build job:"appserver",
+            parameters: [
+                string(name: 'PREBUILD_URL', value: params['preBuiltAppServerZip'])
+            ]
+          
+    build_number = '' + b.getNumber()
+}
+
+def String bestKey(String first, String second) {
+    return first ?: second 
+}
+
+
+def void runner(String testFolder, String appserverconf, Map testResultsMap) {
+    stage(testFolder) {
+        b = build job: 'runner', 
+                  parameters: [
+                      string(name: 'testFolder', value: testFolder),
+                      booleanParam(name:'securityManager', value:false),
+                      string(name: 'build_selector', value: build_number)
+                  ],
+                  propagate: false
+
+        String weblink = b.getAbsoluteUrl()
+        print weblink
+        String test = b.getBuildVariables()['DESCRIPTION_SETTER_DESCRIPTION']
+        testResultsMap.put(bestKey(test,testFolder), b.getNumber())
+    }
+}
+
+def void runnerWithSecurityManager(String testFolder, String appserverconf, Map testResultsMap) {
+    stage(testFolder) {
+        b = build job:"runner",
+                  parameters: [
+                      string(name: 'testFolder', value: testFolder),
+                      booleanParam(name:'securityManager', value:true),
+                      string(name: 'build_selector', value: build_number)
+                  ],
+                  propagate: false
+
+        String weblink = b.getAbsoluteUrl()
+        String test = b.getBuildVariables()['DESCRIPTION_SETTER_DESCRIPTION']
+        testResultsMap.put(bestKey(test,testFolder), b.getNumber())
+    }
+}
+
+def void runnerReserve(String testFolder, String appserverconf, Map testResultsMap) {
+    stage("reverse-$testFolder") {
+        b = build job: 'runner',
+                  parameters: [
+                      string(name: 'testFolder', value: testFolder),
+                      booleanParam(name: 'reverse', value: true),
+                      string(name: 'build_selector', value: build_number)
+                  ],
+                  propagate: false
+
+        String weblink = b.getAbsoluteUrl()
+        String test = b.getBuildVariables()['DESCRIPTION_SETTER_DESCRIPTION']
+        testResultsMap.put(bestKey(test,testFolder), b.getNumber())
+    }
+}
+
+def void runStandalone(String testName, String shortName, String appserverconf, Map testResultsMap) {
+    stage(shortName) {
+        b = build job:testName,
+                  parameters: [
+                      string(name: 'testFolder', value: shortName),
+                      string(name: 'appserverconfig', value: appserverconf),
+                      string(name: 'build_selector', value: build_number)
+                  ],
+                  propagate: false
+
+        String weblink = b.getBuildVariables()['BUILD_URL']
+        testResultsMap.put(shortName, b.getNumber())
+    }
+}
+
+def void runStandaloneWebSocket(String appserverconf, Map testResultsMap) {
+  runStandalone("websocket", "standalonewebsocket", appserverconf, testResultsMap)
+}
+
+def void runStandaloneDependencyInjection(String appserverconf, Map testResultsMap) {
+//  runStandalone("dependency-injection", "standalonedependencyinjection", appserverconf, testResultsMap)
+  runStandalone("atinject", "standalonedependencyinjection", appserverconf, testResultsMap)
+}
+
+def void runStandaloneCDI(String appserverconf, Map testResultsMap) {
+  runStandalone("cdi", "standalonecdi", appserverconf, testResultsMap)
+}
+
+def void runStandaloneBeanValidation(String appserverconf, Map testResultsMap) {
+  runStandalone("beanvalidation", "standalonebeanvalidation", appserverconf, testResultsMap)
+}
+
+def void runStandaloneJAXWS(String appserverconf, Map testResultsMap) {
+  runStandalone("jaxws", "standalonejaxws", appserverconf, testResultsMap)
+}
+
+def void runStandaloneJAXB23(String appserverconf, Map testResultsMap) {
+  runStandalone("jaxb23", "standalonejaxb23", appserverconf, testResultsMap)
+}
+
+def void runStandaloneSAAJ(String appserverconf, Map testResultsMap) {
+  runStandalone("saaj", "standalonesaaj", appserverconf, testResultsMap)
+}
+
+
+
+node {
+    stage("Build") {
+        cleanWs()
+        if (build_number == '') {
+            buildAppServer("test")
+        }
+    }
+    
+    stage("Test") {
+        testResultsMap = [:]
+        appserverconf = ""
+        parallel (
+            "ejb30/sec": { runnerWithSecurityManager("ejb30/sec", appserverconf, testResultsMap) },
+            "servlet": { runnerWithSecurityManager("servlet", appserverconf, testResultsMap) },
+            
+            // csiv2 fails
+            // "reverse-interop/csiv2":{ runnerReserve("interop/csiv2", appserverconf, testResultsMap) },
+            
+            "standalonewebsocket": { runStandaloneWebSocket(appserverconf, testResultsMap) },
+            "standalonedependencyinjection": { runStandaloneDependencyInjection(appserverconf, testResultsMap) },
+            "standalonecdi": {runStandaloneCDI(appserverconf, testResultsMap) },
+            "standalonebeanvalidation": {runStandaloneBeanValidation(appserverconf, testResultsMap) },
+            "standalonejaxws": {runStandaloneJAXWS(appserverconf, testResultsMap) },
+            "standalonejaxb23": {runStandaloneJAXB23(appserverconf, testResultsMap) },
+            "standalonesaaj": {runStandaloneSAAJ(appserverconf, testResultsMap) },
+            
+            "signaturetest/javaee":{ runner("signaturetest/javaee", appserverconf, testResultsMap) },
+            /*"javaee":{ runner("javaee", appserverconf, testResultsMap) },
+            "appclient":{ runner("appclient", appserverconf, testResultsMap) },
+            "assembly":{ runner("assembly", appserverconf, testResultsMap) },
+            "batch":{ runner("batch", appserverconf, testResultsMap) },
+            "compat12":{ runner("compat12", appserverconf, testResultsMap) },
+            "concurrency":{ runner("concurrency", appserverconf, testResultsMap) },
+            "connector":{ runnerWithSecurityManager("connector", appserverconf, testResultsMap) },
+            "ejb30/assembly":{ runner("ejb30/assembly", appserverconf, testResultsMap) },
+            "ejb30/bb":{ runner("ejb30/bb", appserverconf, testResultsMap) },
+            "ejb30/lite":{ runner("ejb30/lite", appserverconf, testResultsMap) },
+            "ejb30/misc":{ runner("ejb30/misc", appserverconf, testResultsMap) },
+            "ejb30/timer":{ runner("ejb30/timer", appserverconf, testResultsMap) },
+            "ejb30/tx":{ runner("ejb30/tx", appserverconf, testResultsMap) },
+            "ejb30/webservice":{ runner("ejb30/webservice", appserverconf, testResultsMap) },
+            "ejb32":{ runner("ejb32", appserverconf, testResultsMap) },
+            "el":{ runner("el", appserverconf, testResultsMap) },
+            // as per Java EE 8 CTS user guide, deploy jacc/ejb separate from jacc/web
+            "jacc/ejb":{ runner("jacc/ejb", appserverconf, testResultsMap) },
+            "jacc/web":{ runner("jacc/web", appserverconf, testResultsMap) },
+            "jaspic":{ runner("jaspic", appserverconf, testResultsMap) },
+            "javamail":{ runner("javamail", appserverconf, testResultsMap) },
+            "jaxrs":{ runner("jaxrs", appserverconf, testResultsMap) },
+            "jdbc/ee/batchUpdate":{ runner("jdbc/ee/batchUpdate", appserverconf, testResultsMap) },
+            "jdbc/ee/callStmt":{ runner("jdbc/ee/callStmt", appserverconf, testResultsMap) },
+            "jdbc/ee/connection":{ runner("jdbc/ee/connection", appserverconf, testResultsMap) },
+            "jdbc/ee/dateTime":{ runner("jdbc/ee/dateTime", appserverconf, testResultsMap) },
+            "jdbc/ee/dbMeta":{ runner("jdbc/ee/dbMeta", appserverconf, testResultsMap) },
+            "jdbc/ee/escapeSyntax":{ runner("jdbc/ee/escapeSyntax", appserverconf, testResultsMap) },
+            "jdbc/ee/exception":{ runner("jdbc/ee/exception", appserverconf, testResultsMap) },
+            "jdbc/ee/prepStmt":{ runner("jdbc/ee/prepStmt", appserverconf, testResultsMap) },
+            "jdbc/ee/resultSet":{ runner("jdbc/ee/resultSet", appserverconf, testResultsMap) },
+            "jdbc/ee/rsMeta":{ runner("jdbc/ee/rsMeta", appserverconf, testResultsMap) },
+            "jdbc/ee/stmt":{ runner("jdbc/ee/stmt", appserverconf, testResultsMap) },
+            "jms/core20":{ runner("jms/core20", appserverconf, testResultsMap) },
+            "jms/core":{ runner("jms/core", appserverconf, testResultsMap) },
+            "jms/ee20":{ runner("jms/ee20", appserverconf, testResultsMap) },
+            "jms/ee":{ runner("jms/ee", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/CriteriaBuilder":{ runner("jpa/core/criteriaapi/CriteriaBuilder", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/CriteriaDelete":{ runner("jpa/core/criteriaapi/CriteriaDelete", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/CriteriaQuery":{ runner("jpa/core/criteriaapi/CriteriaQuery", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/CriteriaUpdate":{ runner("jpa/core/criteriaapi/CriteriaUpdate", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/From":{ runner("jpa/core/criteriaapi/From", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/Join":{ runner("jpa/core/criteriaapi/Join", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/metamodelquery":{ runner("jpa/core/criteriaapi/metamodelquery", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/misc":{ runner("jpa/core/criteriaapi/misc", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/parameter":{ runner("jpa/core/criteriaapi/parameter", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/Root":{ runner("jpa/core/criteriaapi/Root", appserverconf, testResultsMap) },
+            "jpa/core/criteriaapi/strquery":{ runner("jpa/core/criteriaapi/strquery", appserverconf, testResultsMap) },
+            "jpa/core/derivedid":{ runner("jpa/core/derivedid", appserverconf, testResultsMap) },
+            "jpa/core/entitytest":{ runner("jpa/core/entitytest", appserverconf, testResultsMap) },
+            "jpa/core/metamodelapi":{ runner("jpa/core/metamodelapi", appserverconf, testResultsMap) },
+            "jpa/core/annotations":{ runner("jpa/core/annotations", appserverconf, testResultsMap) },
+            "jpa/core/query":{ runner("jpa/core/query", appserverconf, testResultsMap) },
+            "jpa/core/StoredProcedureQuery":{ runner("jpa/core/StoredProcedureQuery", appserverconf, testResultsMap) },
+            "jpa/core/cache":{ runner("jpa/core/cache", appserverconf, testResultsMap) },
+            "jpa/core/callback":{ runner("jpa/core/callback", appserverconf, testResultsMap) },
+            "jpa/core/types":{ runner("jpa/core/types", appserverconf, testResultsMap) },
+            "jpa/core/basic":{ runner("jpa/core/basic", appserverconf, testResultsMap) },
+            "jpa/core/enums":{ runner("jpa/core/enums", appserverconf, testResultsMap) },
+            "jpa/core/exceptions":{ runner("jpa/core/exceptions", appserverconf, testResultsMap) },
+            "jpa/core/inheritance":{ runner("jpa/core/inheritance", appserverconf, testResultsMap) },
+            "jpa/core/lock":{ runner("jpa/core/lock", appserverconf, testResultsMap) },
+            "jpa/core/nestedembedding":{ runner("jpa/core/nestedembedding", appserverconf, testResultsMap) },
+            "jpa/core/override":{ runner("jpa/core/override", appserverconf, testResultsMap) },
+            "jpa/core/persistenceUtil":{ runner("jpa/core/persistenceUtil", appserverconf, testResultsMap) },
+            "jpa/core/persistenceUtilUtil":{ runner("jpa/core/persistenceUtilUtil", appserverconf, testResultsMap) },
+            "jpa/core/relationship":{ runner("jpa/core/relationship", appserverconf, testResultsMap) },
+            "jpa/core/versioning":{ runner("jpa/core/versioning", appserverconf, testResultsMap) },
+            "jpa/ee":{ runner("jpa/ee", appserverconf, testResultsMap) },
+            "jpa/jpa22":{ runner("jpa/jpa22", appserverconf, testResultsMap) },
+            "jsf":{ runner("jsf", appserverconf, testResultsMap) },
+            "jsonp":{ runner("jsonp", appserverconf, testResultsMap) },
+            "jsonb":{ runner("jsonb", appserverconf, testResultsMap) },
+            "jsp":{ runner("jsp", appserverconf, testResultsMap) },
+            "jstl":{ runner("jstl", appserverconf, testResultsMap) },
+            "jta":{ runner("jta", appserverconf, testResultsMap) },
+            "rmiiiop":{ runner("rmiiiop", appserverconf, testResultsMap) },
+            "webservices12":{ runner("webservices12", appserverconf, testResultsMap) },
+            "webservices13":{ runner("webservices13", appserverconf, testResultsMap) },
+            "websocket":{ runner("websocket", appserverconf, testResultsMap) },
+            "xa":{ runner("xa", appserverconf, testResultsMap) },
+            "securityapi":{ runnerWithSecurityManager("securityapi", appserverconf, testResultsMap) },
+            */
+        )
+    }
+    stage("Reporting") {
+        dir('hera') {
+          git 'https://github.com/spyrkob/hera.git'
+        }
+                
+        dir('harmonia') {
+          git url: 'https://github.com/spyrkob/harmonia.git',
+              branch: 'tckdev'
+        }
+        try {
+            sh "mkdir results"
+            print testResultsMap
+            testResultsMap.each { r ->
+              print r
+              def testName = r.key
+              def jobId = r.value
+              
+              def jobName="runner"
+              
+              // checks for different job names
+              def jtrTestsFolder="jakartaeetck/bin/JTwork/com/sun/ts/tests"
+              if ( testName.equals("standalonewebsocket" )) {
+                jtrTestsFolder="websockettck/bin/JTWork/com/sun/ts/tests"
+                jobName="websocket"
+              } else if ( testName.equals("jaxb23") ) {
+                jtrTestsFolder="JTwork/com/sun/ts/tests"
+                jobName="runner"
+              } else if ( testName.equals("batch") ) {
+                jtrTestsFolder="jakartaeetck/bin/JTwork/com/ibm/jbatch/tck/tests"
+                jobName="runner"
+              } else if ( testName.equals("standalonejaxws") ) {
+                jtrTestsFolder="JTwork/com/sun/ts/tests"
+                jobName="jaxws"
+              } else if ( testName.equals("standalonejaxb23") ) {
+                jtrTestsFolder="*"  // TODO: will need rework I guess
+                jobName="jaxb23"
+              } else if ( testName.equals("standalonesaaj") ) {
+                jtrTestsFolder="JTwork/com/sun/ts/tests"
+                jobName="saaj"
+              } else if ( testName.equals("standalonecdi") ) {
+                jobName="cdi"
+              } else if ( testName.equals("standalonebeanvalidation") ) {
+                jobName="beanvalidation"
+              } else if ( testName.equals("standalonedependencyinjection") ) {
+                jobName="atinject"
+              } else {
+                jobName="runner"
+              }
+              
+              def targetDir="results/${jobName}-${jobId}"
+              sh "mkdir -p ${targetDir}"
+              sh "echo ${testName} > ${targetDir}/name.txt"
+                
+              def runnerJobDir = "/var/jenkins_home/jobs/${jobName}/builds/${jobId}/archive"
+              
+              // ignore if source doesn't exist - check for error later
+              if (!["standalonedependencyinjection", "standalonejaxb23", "standalonewebsocket", "standalonecdi", "standalonebeanvalidation"].contains(testName)) {
+                  print runnerJobDir
+                  sh "cp -r ${runnerJobDir}/logs ${targetDir}/"
+              }
+              
+              if (!["standalonedependencyinjection", "standalonecdi", "standalonebeanvalidation"].contains(testName)) {  
+                sh "cp -r ${runnerJobDir}/${jtrTestsFolder} ${targetDir}/"
+              }
+              
+              if ("standalonedependencyinjection".equals(testName)) {
+                  runnerJobDir = "/var/jenkins_home/jobs/${jobName}/builds/${jobId}/"
+                  sh "cp -r ${runnerJobDir}/log ${targetDir}/consoleText"
+              } else if ("standalonecdi".equals(testName)) {
+                  runnerJobDir = "/var/jenkins_home/jobs/${jobName}/builds/${jobId}/"
+                  sh "cp -r ${runnerJobDir}/log ${targetDir}/consoleText"
+                  sh "cp -r ${runnerJobDir}/archive/weld/jboss-tck-runner/target/surefire-reports/TEST-TestSuite.xml ${targetDir}/"
+              } else if ("standalonebeanvalidation".equals(testName)) {
+                  runnerJobDir = "/var/jenkins_home/jobs/${jobName}/builds/${jobId}/"
+                  sh "cp -r ${runnerJobDir}/archive/hibernate-validator/tck-runner/target/surefire-reports/TEST-TestSuite.xml ${targetDir}/"
+              }
+              
+            }
+            
+            env.BUILD_SCRIPT = "${env.WORKSPACE}/${env.PATH_TO_SCRIPT}"
+            env.WORKDIR = "${env.WORKSPACE}/"
+            sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
+            sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job"
+        
+        } catch(err) {
+            echo "Error while reporting: ${err}"
+        } finally {
+            try {
+                sh label: '', script: "${env.WORKSPACE}/hera/hera.sh stop"
+            } catch (err) {
+                echo "Error while deleting container: ${err}"
+            }
+            archiveArtifacts artifacts: 'tck_results/**', fingerprint: true, followSymlinks: false, onlyIfSuccessful: false
+            cleanWs()
+        }
+    }
+}
