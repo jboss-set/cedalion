@@ -54,8 +54,10 @@ pipeline {
                           git url: 'https://github.com/jboss-set/auxilia.git', poll: false, changelog: false
                         }
                         env.BUILD_COMMAND = "cryo"
-                        if ( env.HARMONIA_SCRIPT && !env.HARMONIA_SCRIPT.isEmpty()​​ ) {
-                             env.CRYO_HARMONIA_SH = env.HARMONIA_SCRIPT
+                        if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
+                             
+                        } else {
+                            env.CRYO_HARMONIA_SH = env.HARMONIA_SCRIPT
                         }
                         env.HARMONIA_SCRIPT = "cryo.sh"
                         parent_jobname = "ci-cryo"
@@ -63,7 +65,7 @@ pipeline {
                         env.TRIGGER_JOB_NAME = "${env.JOB_NAME}".replaceAll("-repository-build","-build")
                     } else if ( "${env.JOB_NAME}".endsWith("-build") ) {
                         env.BUILD_COMMAND = "build"
-                        if ( env.HARMONIA_SCRIPT && env.HARMONIA_SCRIPT.isEmpty()​​ ) {
+                        if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
                              env.HARMONIA_SCRIPT = "eap-job.sh"
                         }
                         env.COPY_ARTIFACTS = "true"
@@ -71,7 +73,7 @@ pipeline {
                         env.TRIGGER_JOB_NAME = "${env.JOB_NAME}".replaceAll("-build","-testsuite")
                     } else if ( "${env.JOB_NAME}".endsWith("-testsuite") ) {
                         env.BUILD_COMMAND = "testsuite"
-                        if ( env.HARMONIA_SCRIPT && env.HARMONIA_SCRIPT.isEmpty()​​ ) {
+                        if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
                              env.HARMONIA_SCRIPT = "eap-job.sh"
                         }
                         parent_jobname = "${env.JOB_NAME}".replace("-testsuite","-build")
