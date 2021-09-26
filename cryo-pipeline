@@ -58,6 +58,7 @@ pipeline {
                         }
                         env.BUILD_COMMAND = "cryo"
                         if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
+                            env.CRYO_HARMONIA_SH = "eap-job.sh"
                         } else {
                             env.CRYO_HARMONIA_SH = env.HARMONIA_SCRIPT
                         }
