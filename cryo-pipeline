@@ -100,6 +100,17 @@ pipeline {
             when { expression { env.BUILD_COMMAND == 'cryo' } }
             steps {
                 sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job"
+                script {
+                    //archive workdir
+                    def branch =""
+                    def EAP_FILE_ARCHIVE=""
+                    dir('workdir'){
+                        branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                        EAP_FILE_ARCHIVE="eap_${branch}.tar.gz"
+                    }
+
+                    sh "tar -czf ${EAP_FILE_ARCHIVE} -C ./workdir ."
+                }
                 archiveArtifacts artifacts: '**/*', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
                 findText(textFinders: [
                     textFinder(regexp: ".*CRYO.*SUCCESS.*(Dry run complete|Push future).*", alsoCheckConsoleOutput: true, buildResult: 'SUCCESS', changeCondition: 'MATCH_FOUND')
