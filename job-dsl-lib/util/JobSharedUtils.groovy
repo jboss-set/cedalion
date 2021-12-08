@@ -27,6 +27,10 @@ class JobSharedUtils {
     }
 
     static mavenParameters(def params, def mavenSettingsXml) {
+        if (mavenSettingsXml == null) {
+            mavenSettingsXml = '/opt/tools/settings.xml'
+        }
+        
         params.with {
             stringParam {
                 name ("MAVEN_HOME")

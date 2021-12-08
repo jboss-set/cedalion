@@ -9,7 +9,7 @@ class Builder {
     String branch
     String schedule = Constants.DEFAULT_SCHEDULE
     String parentJobname = ''
-    String mavenSettingsXml = '/opt/tools/settings.xml'
+    String mavenSettingsXml
     String harmoniaScript = 'eap-job/olympus.sh'
     String gitRepositoryUrl = 'git@github.com:jbossas/jboss-eap7.git'
 
