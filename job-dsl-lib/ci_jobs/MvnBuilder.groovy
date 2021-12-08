@@ -1,6 +1,7 @@
 package ci_jobs
 
 import util.Constants
+import util.JobSharedUtils
 
 class MvnBuilder {
 
@@ -26,37 +27,14 @@ class MvnBuilder {
                     sandbox()
                     }
                 }
-                logRotator {
-                    daysToKeep(30)
-                    numToKeep(10)
-                    artifactDaysToKeep(60)
-                    artifactNumToKeep(5)
-                }
+                JobSharedUtils.defaultBuildDiscarder(delegate)
                 triggers {
-                    scm (schedule)
+                    scm(schedule)
                     cron('@daily')
                 }
                 parameters {
-                    stringParam {
-                        name ("GIT_REPOSITORY_URL")
-                        defaultValue(repoUrl)
-                    }
-                    stringParam {
-                        name ("GIT_REPOSITORY_BRANCH")
-                        defaultValue('master')
-                    }
-                    stringParam {
-                        name ("MAVEN_HOME")
-                        defaultValue("/opt/apache/maven")
-                    }
-                    stringParam {
-                        name ("JAVA_HOME")
-                        defaultValue("/opt/oracle/java")
-                    }
-                    stringParam {
-                        name ("MAVEN_SETTINGS_XML")
-                        defaultValue('/opt/tools/settings.xml')
-                    }
+                    JobSharedUtils.gitParameters(delegate, repoUrl, 'master')
+                    JobSharedUtils.mavenParameters(delegate, '/opt/tools/settings.xml')
                     stringParam {
                         name ("MAVEN_OPTS")
                         defaultValue("-Dmaven.wagon.http.ssl.insecure=true -Dhttps.protocols=TLSv1.2  -Dnorpm")
