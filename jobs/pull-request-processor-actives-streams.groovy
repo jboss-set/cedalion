@@ -14,7 +14,7 @@ pipelineJob(ITEM_NAME) {
     JobSharedUtils.defaultBuildDiscarder(delegate)
     triggers {
         scm (JobSharedUtils.DEFAULT_SCHEDULE)
-        cron('@daily')
+        cron('@hourly')
     }
     parameters {
         JobSharedUtils.mavenParameters(params: delegate)
