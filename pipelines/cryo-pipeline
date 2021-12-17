@@ -58,7 +58,7 @@ pipeline {
                         }
                         env.BUILD_COMMAND = "cryo"
                         if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
-                            env.CRYO_HARMONIA_SH = "eap-job.sh"
+                            env.CRYO_HARMONIA_SH = "eap-job/olympus.sh"
                         } else {
                             env.CRYO_HARMONIA_SH = env.HARMONIA_SCRIPT
                         }
@@ -69,7 +69,7 @@ pipeline {
                     } else if ( "${env.JOB_NAME}".endsWith("-build") ) {
                         env.BUILD_COMMAND = "build"
                         if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
-                             env.HARMONIA_SCRIPT = "eap-job.sh"
+                             env.HARMONIA_SCRIPT = "eap-job/olympus.sh"
                         }
                         env.COPY_ARTIFACTS = "true"
                         parent_jobname = "${env.JOB_NAME}".replace("-build","-repository-build")
@@ -77,7 +77,7 @@ pipeline {
                     } else if ( "${env.JOB_NAME}".endsWith("-testsuite") ) {
                         env.BUILD_COMMAND = "testsuite"
                         if ( env.HARMONIA_SCRIPT == null || "".equals("${env.HARMONIA_SCRIPT}") ) {
-                             env.HARMONIA_SCRIPT = "eap-job.sh"
+                             env.HARMONIA_SCRIPT = "eap-job/olympus.sh"
                         }
                         parent_jobname = "${env.JOB_NAME}".replace("-testsuite","-build")
                     } else {
