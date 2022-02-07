@@ -3,7 +3,7 @@ package ansible
 class Builder {
 
     String collectionName
-    String branch
+    String branch = "main"
     String schedule = 'H/10 * * * *'
 
     def build(factory) {
