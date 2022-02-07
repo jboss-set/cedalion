@@ -3,7 +3,7 @@ package ansible
 class Builder {
 
     String collectionName
-    String branch
+    String branch = "main"
     String schedule = 'H/10 * * * *'
 
     def build(factory) {
@@ -40,7 +40,7 @@ class Builder {
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
-                      defaultValue("main")
+                      defaultValue(branch)
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
