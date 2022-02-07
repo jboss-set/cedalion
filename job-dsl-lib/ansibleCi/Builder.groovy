@@ -6,7 +6,7 @@ class Builder {
     String projectPrefix = 'ansible-ci'
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
-    String branch
+    String branch = "main"
     String schedule = 'H/10 * * * *'
 
     def build(factory) {

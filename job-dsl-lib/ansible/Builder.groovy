@@ -40,7 +40,7 @@ class Builder {
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
-                      defaultValue("main")
+                      defaultValue(branch)
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
