@@ -3,6 +3,7 @@ package ansible
 class Builder {
 
     String collectionName
+    String downstreamName = ""
     String branch = "main"
     String schedule = 'H/10 * * * *'
 
@@ -50,6 +51,11 @@ class Builder {
                       name ("VERSION")
                       defaultValue("")
                     }
+                    stringParam {
+                      name ("PROJECT_DOWNSTREAM_NAME")
+                      defaultValue(downstreamName)
+                    }
+
                 }
             }
         }
