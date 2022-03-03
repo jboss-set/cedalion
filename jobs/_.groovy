@@ -25,6 +25,7 @@ EapView.jobList(this, 'eap-6.4.x', 'eap-6.4.*')
 
 new eap7.Builder(branch:'main',
                  jobName: 'wildfly',
-                 gitRepositoryUrl: "git@github.com:wildfly/wildfly.git"
+                 gitRepositoryUrl: "git@github.com:wildfly/wildfly.git",
+                 javaHome: "/opt/oracle/openjdk-11.0.14.1_1"
                 ).buildAndTest(this)
 EapView.jobList(this, 'wildfly', 'wildfly.*')
