@@ -8,6 +8,10 @@ class Builder {
     String jobSuffix
     String repoUrl
     String toAddress
+    String id
+    String reportTitle
+    String rule
+    String logger_project_code
 
     void build(factory) {
         if (jobName == null) {
@@ -39,6 +43,22 @@ class Builder {
                     stringParam {
                         name("HARMONIA_SCRIPT")
                         defaultValue('upgrade-components-report.sh')
+                    }
+                    stringParam {
+                        name("JOB_NAME")
+                        defaultValue(id)
+                    }
+                    stringParam {
+                        name("RULE_NAME")
+                        defaultValue(rule)
+                    }
+                    stringParam {
+                        name("REPORT_TITLE")
+                        defaultValue(reportTitle)
+                    }
+                    stringParam {
+                        name("LOGGER_PROJECT_CODE")
+                        defaultValue(logger_project_code)
                     }
                     stringParam {
                         name("COMPONENT_UPGRADE_LOGGER")
