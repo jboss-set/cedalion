@@ -6,7 +6,7 @@ new ci_jobs.Builder(repoName: 'bug-clerk').buildMvnJob(this)
 
 new ci_jobs.Builder(repoName: 'cryo').buildMvnJob(this)
 
-new ci_jobs.Builder(repoName: 'mjolnir').buildMvnJob(this)
+new ci_jobs.Builder(repoName: 'mjolnir', javaHome: "/opt/oracle/openjdk-11.0.14.1_1").buildMvnJob(this)
 
 new ci_jobs.Builder(repoName: 'prbz-overview').buildMvnJob(this)
 

@@ -9,6 +9,7 @@ class Builder {
     String branch
     String repoUrl
     String mavenGoals = '' // defaults to clean install in hera
+    String javaHome=''
 
     void validate_properties() {
         if (jobName == null) {
@@ -60,7 +61,7 @@ class Builder {
                 baseJob(delegate)
                 parameters {
                     JobSharedUtils.gitParameters(delegate, repoUrl, 'master')
-                    JobSharedUtils.mavenParameters(params: delegate)
+                    JobSharedUtils.mavenParameters(params: delegate, javaHome: javaHome)
                     // override MAVEN_OPTS to add -Dnorpm
                     stringParam {
                         name ("MAVEN_OPTS")
