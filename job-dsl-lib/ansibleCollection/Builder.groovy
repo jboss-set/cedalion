@@ -1,4 +1,4 @@
-package ansible
+package ansibleCollection
 
 class Builder {
 
@@ -6,6 +6,8 @@ class Builder {
     String downstreamName = ""
     String branch = "main"
     String schedule = 'H/10 * * * *'
+    String podmanImage = "localhost/ansible"
+    String pathToScript = "build-collection.sh"
 
     def build(factory) {
         factory.with {
@@ -13,7 +15,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-pipeline'))
+                        script(readFileFromWorkspace('pipelines/ansible-collection-pipeline'))
                         sandbox()
                     }
                 }
@@ -33,7 +35,7 @@ class Builder {
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
-                      defaultValue("build-collection.sh")
+                      defaultValue(pathToScript)
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
@@ -45,7 +47,7 @@ class Builder {
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
-                      defaultValue("localhost/ansible")
+                      defaultValue(podmanImage)
                     }
                     stringParam {
                       name ("VERSION")
@@ -55,7 +57,6 @@ class Builder {
                       name ("PROJECT_DOWNSTREAM_NAME")
                       defaultValue(downstreamName)
                     }
-
                 }
             }
         }

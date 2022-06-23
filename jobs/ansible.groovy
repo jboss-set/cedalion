@@ -1,10 +1,10 @@
 // Jobs to release productized version of Ansible Collection
-new ansible.Builder(collectionName:'redhat-csp-download').build(this)
-new ansible.Builder(collectionName:'jws-ansible-playbook').build(this)
-new ansible.Builder(collectionName:'ansible_collections_jcliff').build(this)
-new ansible.Builder(collectionName:'wildfly', downstreamName: 'jboss_eap').build(this)
-new ansible.Builder(collectionName:'infinispan', downstreamName: 'jboss_data_grid').build(this)
-new ansible.Builder(collectionName:'keycloak', downstreamName: 'rh_sso').build(this)
+new ansibleCollection.Builder(collectionName:'redhat-csp-download').build(this)
+new ansibleCollection.Builder(collectionName:'jws-ansible-playbook').build(this)
+new ansibleCollection.Builder(collectionName:'ansible_collections_jcliff').build(this)
+new ansibleCollection.Builder(collectionName:'wildfly', downstreamName: 'jboss_eap').build(this)
+new ansibleCollection.Builder(collectionName:'infinispan', downstreamName: 'jboss_data_grid').build(this)
+new ansibleCollection.Builder(collectionName:'keycloak', downstreamName: 'rh_sso').build(this)
 EapView.jobList(this, 'Ansible Collections', 'ansible-collection.*')
 // CI Jobs for Ansible Middleware
 //   Note that each CI job needs to increment the moleculeBuildId as
