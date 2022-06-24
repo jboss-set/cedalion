@@ -30,7 +30,7 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                  git branch: 'jenkins_jobs_vol', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
@@ -47,7 +47,7 @@ pipeline {
                     dumpParams("${env.WORKSPACE}/job_params.txt")
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
-                    archiveArtifacts artifacts: 'workdir/**/*', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+                    archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
                }
            }
         }
@@ -63,9 +63,10 @@ pipeline {
             }
         }
         failure {
-            mail to: 'rpelisse@redhat.com', from: 'rpelisse@redhat.com',
-                subject: "Build: ${env.JOB_NAME} - Failed",
-                body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}\n\nBlue Ocean:\n${env.RUN_DISPLAY_URL}"
+            mail to: 'Romain Pelisse <rpelisse@redhat.com>, Guido Grazioli <ggraziol@redhat.com>',
+                 from: 'Romain Pelisse <rpelisse@redhat.com>',
+                 subject: "Build: ${env.JOB_NAME} - Failed",
+                 body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}\n\nBlue Ocean:\n${env.RUN_DISPLAY_URL}"
         }
     }
 }
