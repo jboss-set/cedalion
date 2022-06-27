@@ -19,10 +19,13 @@ EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 27001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 28001).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
-// Job running an Ansible Playbook
+// Janus jobs - generating downstream collections
 new ansible.Builder(projectName:'janus', jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks/jws.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_eap', playbook: 'playbooks/jboss_eap.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
+// Job testing the downstream
+new ansibleDownstreamRunner.Builder(projectName: 'jws',playbook: 'playbooks/playbook.yml').build(this)
+EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
