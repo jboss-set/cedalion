@@ -25,20 +25,29 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git branch: 'jenkins_jobs_vol', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                  git url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
-                  git branch: 'ansible-playbook', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                }
+
+                dir('eris') {
+                  git url: 'git@github.com:jboss-set/eris.git', branch: 'main'
                 }
 
                 script {
                     env.BUILD_SCRIPT = "${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}"
                     env.WORKDIR = "${env.WORKSPACE}/workdir/"
-                    sh label: 'create-workdir', script: "mkdir -p ${env.WORKSPACE}/workdir/"
+                    env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL = "${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}"
                     dumpParams("${env.WORKSPACE}/job_params.txt")
+                    sh label: 'create workdir', script: "mkdir -p ${env.WORKDIR}"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
+                    archiveArtifacts artifacts: "${env.WORKDIR}/**/*", fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+                    findText(textFinders: [
+                        textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
+                    ])
                }
            }
         }

@@ -27,5 +27,12 @@ new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the downstream
-new ansibleDownstreamRunner.Builder(projectName: 'jws',playbook: 'playbooks/playbook.yml').build(this)
+new ansibleDownstreamRunner.Builder(
+  projectName: 'jws',
+  playbook: 'playbooks/playbook.yml',
+  collections: 'redhat_csp_download',
+  products_paths: '/webserver/5.6.0/jws-5.6.0-application-server.zip,/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip'
+  ).build(this)
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
+new ansibleDownstreamCi.Builder(projectName: 'jws').build(this)
+EapView.jobList(this, 'Ansible Downstream CI', 'ansible-ci-downstream-.*$')
