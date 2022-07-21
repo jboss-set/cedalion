@@ -5,6 +5,7 @@ new ansibleCollection.Builder(collectionName:'ansible_collections_jcliff').build
 new ansibleCollection.Builder(collectionName:'wildfly', downstreamName: 'jboss_eap').build(this)
 new ansibleCollection.Builder(collectionName:'infinispan', downstreamName: 'jboss_data_grid').build(this)
 new ansibleCollection.Builder(collectionName:'keycloak', downstreamName: 'rh_sso').build(this)
+new ansibleCollection.Builder(collectionName:'amq', downstreamName: 'amq').build(this)
 EapView.jobList(this, 'Ansible Collections', 'ansible-collection.*')
 // CI Jobs for Ansible Middleware
 //   Note that each CI job needs to increment the moleculeBuildId as
@@ -15,6 +16,7 @@ new ansibleCi.Builder(projectName:'wildfly', moleculeBuildId: 23001).build(this)
 new ansibleCi.Builder(projectName:'ansible_collections_jcliff', moleculeBuildId: 24001).build(this)
 new ansibleCi.Builder(projectName:'infinispan', moleculeBuildId: 25001).build(this)
 new ansibleCi.Builder(projectName:'keycloak', moleculeBuildId: 26001).build(this)
+new ansibleCi.Builder(projectName:'amq', moleculeBuildId: 27001).build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 27001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 28001).build(this)
@@ -25,6 +27,7 @@ new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_eap', playbook: 'playbooks/jboss_eap.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
+new ansible.Builder(projectName:'janus', jobSuffix: '-amq', playbook: 'playbooks/activemq.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the downstream
 new ansibleDownstreamRunner.Builder(
