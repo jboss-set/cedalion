@@ -36,6 +36,13 @@ new ansibleDownstreamRunner.Builder(
   collections: 'redhat_csp_download',
   products_paths: '/webserver/5.6.0/jws-5.6.0-application-server.zip,/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip'
   ).build(this)
+new ansibleDownstreamRunner.Builder(
+  projectName: 'jboss_eap',
+  playbook: 'playbooks/playbook.yml',
+  collections: 'redhat_csp_download',
+  products_paths: '/eap7/7.4.5/jboss-eap-7.4.5.zip'
+  ).build(this)
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
 new ansibleDownstreamCi.Builder(projectName: 'jws').build(this)
+new ansibleDownstreamCi.Builder(projectName: 'jboss_eap').build(this)
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-ci-downstream-.*$')
