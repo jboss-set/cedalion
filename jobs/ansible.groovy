@@ -20,6 +20,7 @@ new ansibleCi.Builder(projectName:'amq', moleculeBuildId: 27001).build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 27001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 28001).build(this)
+new ansibleCi.Builder(projectName:'eap-migration-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 29001).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
 new ansible.Builder(projectName:'janus', jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
