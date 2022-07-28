@@ -3,7 +3,7 @@ package ansibleDownstreamCi
 class Builder {
 
     String projectName
-    String projectPrefix = 'ansible-ci-downstream'
+    String projectPrefix = 'ansible-downstream-ci'
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
