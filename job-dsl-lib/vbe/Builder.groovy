@@ -12,7 +12,7 @@ class Builder {
     String javaHome='/opt/oracle/java'
     String harmoniaScript = 'eap-job/olympus.sh'
     String gitRepositoryUrl = 'git@github.com:jbossas/jboss-eap7.git'
-    String vbeChannels = 'https://gitlab.cee.redhat.com/bspyrkos/channels-definitions/-/raw/main/eap-74/src/main/resources/channel.yaml?inline=false'
+    String vbeChannels = '${VBE_EAP_74_CHANNEL}'
     String vbeRepositoryNames = 'jboss-eap-7.4-product-repository'
 
     def buildAndTest(factory) {
