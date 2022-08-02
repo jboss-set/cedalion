@@ -70,7 +70,7 @@ class Builder {
                     }
                     stringParam {
                       name("SCENARIO_NAME")
-                      defaultValue(MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
+                      defaultValue(scenarioName)
                     }
                 }
             }
