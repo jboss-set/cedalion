@@ -15,7 +15,7 @@ new ansibleCi.Builder(projectName:'jws-ansible-playbook', moleculeBuildId: 22001
 new ansibleCi.Builder(projectName:'wildfly', moleculeBuildId: 23001).build(this)
 new ansibleCi.Builder(projectName:'infinispan', moleculeBuildId: 25001).build(this)
 new ansibleCi.Builder(projectName:'keycloak', moleculeBuildId: 26001).build(this)
-new ansibleCi.Builder(projectName:'amq', moleculeBuildId: 27001).build(this)
+new ansibleCi.Builder(projectName:'amq', scenarioName: 'default', moleculeBuildId: 27001).build(this)
 new ansibleCi.Builder(projectName:'jws-dot', moleculeBuildId: 28001, gitUrl: "git@gitlab:ansible-middleware/").build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)

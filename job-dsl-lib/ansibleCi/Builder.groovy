@@ -7,6 +7,7 @@ class Builder {
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
+    String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
 
     def build(factory) {
@@ -65,6 +66,10 @@ class Builder {
                     }
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
+                      defaultValue(MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
+                    }
+                    stringParam {
+                      name("SCENARIO_NAME")
                       defaultValue(MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                 }
