@@ -72,6 +72,10 @@ class Builder {
                       name("SCENARIO_NAME")
                       defaultValue(scenarioName)
                     }
+                    stringParam {
+                      name ("JENKINS_JOBS_VOLUME_ENABLED")
+                      defaultValue('True')
+                    }
                 }
             }
         }
