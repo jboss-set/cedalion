@@ -3,13 +3,13 @@ package ansibleDownstreamCi
 class Builder {
 
     String projectName
-    String projectPrefix = 'ansible-downstream-ci'
+    String projectPrefix = "ansible-ci"
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
     String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
-    String pipelineFile = 'pipelines/ansible-downstream-ci-pipeline'
+    String pipelineFile = "pipelines/ansible-downstream-ci-pipeline"
     String pathToScript  = "molecule-downstream.sh"
 
     def build(factory) {
@@ -38,7 +38,7 @@ class Builder {
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
-                      defaultValue(pathToScript
+                      defaultValue(pathToScript)
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
