@@ -3,12 +3,14 @@ package ansibleCi
 class Builder {
 
     String projectName
-    String projectPrefix = 'ansible-ci'
+    String projectPrefix = "ansible-ci"
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
     String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
+    String pipelineFile = "pipelines/ansible-ci-pipeline"
+    String pathToScript  = "molecule.sh"
 
     def build(factory) {
         factory.with {
@@ -16,7 +18,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-ci-pipeline'))
+                        script(readFileFromWorkspace(pipelineFile))
                         sandbox()
                     }
                 }
@@ -36,7 +38,7 @@ class Builder {
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
-                      defaultValue("molecule.sh")
+                      defaultValue(pathToScript)
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
@@ -65,16 +67,16 @@ class Builder {
                       defaultValue(moleculeBuildId)
                     }
                     stringParam {
+                      name ("JENKINS_JOBS_VOLUME_ENABLED")
+                      defaultValue('True')
+                    }
+                    stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
                       defaultValue(MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name("SCENARIO_NAME")
                       defaultValue(scenarioName)
-                    }
-                    stringParam {
-                      name ("JENKINS_JOBS_VOLUME_ENABLED")
-                      defaultValue('True')
                     }
                 }
             }
