@@ -65,16 +65,16 @@ class Builder {
                       defaultValue(moleculeBuildId)
                     }
                     stringParam {
+                      name ("JENKINS_JOBS_VOLUME_ENABLED")
+                      defaultValue('True')
+                    }
+                    stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
                       defaultValue(MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name("SCENARIO_NAME")
                       defaultValue(scenarioName)
-                    }
-                    stringParam {
-                      name ("JENKINS_JOBS_VOLUME_ENABLED")
-                      defaultValue('True')
                     }
                 }
             }
