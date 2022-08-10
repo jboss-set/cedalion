@@ -7,7 +7,10 @@ class Builder {
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
+    String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
+    String pipelineFile = 'pipelines/ansible-downstream-ci-pipeline'
+    String pathToScript  = "molecule-downstream.sh"
 
     def build(factory) {
         factory.with {
@@ -15,7 +18,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-downstream-ci-pipeline'))
+                        script(readFileFromWorkspace(pipelineFile))
                         sandbox()
                     }
                 }
@@ -35,7 +38,7 @@ class Builder {
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
-                      defaultValue("molecule-downstream.sh")
+                      defaultValue(pathToScript
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")

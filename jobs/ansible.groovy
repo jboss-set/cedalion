@@ -1,3 +1,6 @@
+def downstreamCIJob(projectName, projectPrefix = "ansible-downstream-ci") {
+  println(projectPrefix + "-" + projectName)
+}
 // Jobs to release productized version of Ansible Collection
 new ansibleCollection.Builder(collectionName:'redhat-csp-download').build(this)
 new ansibleCollection.Builder(collectionName:'jws-ansible-playbook').build(this)
@@ -19,6 +22,15 @@ new ansibleCi.Builder(projectName:'amq', scenarioName: 'default,amq_upgrade', mo
 new ansibleCi.Builder(projectName:'jws-dot', moleculeBuildId: 28001, gitUrl: "git@gitlab:ansible-middleware/").build(this)
 new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
+// CI jobs for downstream (Janus generated) collections
+def projectPrefix = "ansible-downstream-ci"
+def pipelineFile = 'pipelines/ansible-downstream-ci-pipeline'
+def pathToScript  = "molecule-downstream.sh"
+downstreamCIJob(projectName = "test")
+new ansibleCi.Builder(projectName: 'jws-ansible-playbook', projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: 50001).build(this)
+new ansibleCi.Builder(projectName: 'jboss_eap', projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: 50002).build(this)
+EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
+// CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 40002).build(this)
 new ansibleCi.Builder(projectName:'eap-migration-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 41003).build(this)
@@ -32,7 +44,7 @@ new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-amq', playbook: 'playbooks/activemq.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
-// Job testing the downstream
+// Job testing the default playbook of the downstream (Janus generated) collection
 new ansibleDownstreamRunner.Builder(
   projectName: 'jws',
   playbook: 'playbooks/playbook.yml',
@@ -46,6 +58,3 @@ new ansibleDownstreamRunner.Builder(
   products_paths: '/eap7/7.4.5/jboss-eap-7.4.5.zip'
   ).build(this)
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
-new ansibleDownstreamCi.Builder(projectName: 'jws-ansible-playbook', moleculeBuildId: 50001).build(this)
-new ansibleDownstreamCi.Builder(projectName: 'jboss_eap', moleculeBuildId: 50002).build(this)
-EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')

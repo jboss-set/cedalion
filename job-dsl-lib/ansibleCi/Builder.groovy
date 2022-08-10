@@ -9,6 +9,8 @@ class Builder {
     String branch = "main"
     String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
+    String pipelineFile = 'pipelines/ansible-ci-pipeline'
+    String pathToScript  = "molecule.sh"
 
     def build(factory) {
         factory.with {
@@ -16,7 +18,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-ci-pipeline'))
+                        script(readFileFromWorkspace(pipelineFile))
                         sandbox()
                     }
                 }
@@ -36,7 +38,7 @@ class Builder {
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
-                      defaultValue("molecule.sh")
+                      defaultValue(pathToScript
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
