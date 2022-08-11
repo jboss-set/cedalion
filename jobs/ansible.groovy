@@ -1,5 +1,5 @@
-def downstreamCIJob(projectName, projectPrefix = "ansible-downstream-ci") {
-  println(projectPrefix + "-" + projectName)
+def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh") {
+  new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId).build(this)
 }
 // Jobs to release productized version of Ansible Collection
 new ansibleCollection.Builder(collectionName:'redhat-csp-download').build(this)
@@ -20,21 +20,18 @@ new ansibleCi.Builder(projectName:'infinispan', moleculeBuildId: 25001).build(th
 new ansibleCi.Builder(projectName:'keycloak', moleculeBuildId: 26001).build(this)
 new ansibleCi.Builder(projectName:'amq', scenarioName: 'default,amq_upgrade', moleculeBuildId: 27001).build(this)
 new ansibleCi.Builder(projectName:'jws-dot', moleculeBuildId: 28001, gitUrl: "git@gitlab:ansible-middleware/").build(this)
-new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
+//new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 // CI jobs for downstream (Janus generated) collections
-def projectPrefix = "ansible-downstream-ci"
-def pipelineFile = 'pipelines/ansible-downstream-ci-pipeline'
-def pathToScript  = "molecule-downstream.sh"
-downstreamCIJob(projectName = "test")
-new ansibleCi.Builder(projectName: 'jws-ansible-playbook', projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: 50001).build(this)
-new ansibleCi.Builder(projectName: 'jboss_eap', projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: 50002).build(this)
+downstreamCIJob('jws-ansible-playbook', "50001")
+downstreamCIJob('jboss_eap', "50002")
+downstreamCIJob('jws-dot', "50003")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 40002).build(this)
-new ansibleCi.Builder(projectName:'eap-migration-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 41003).build(this)
-new ansibleCi.Builder(projectName:'jws-app-update-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 42003).build(this)
+//new ansibleCi.Builder(projectName:'eap-migration-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 41003).build(this)
+//new ansibleCi.Builder(projectName:'jws-app-update-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 42003).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
 new ansible.Builder(projectName:'janus', jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
