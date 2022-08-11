@@ -1,4 +1,4 @@
-def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript  = "molecule-downstream.sh") {
+def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh") {
   new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId).build(this)
 }
 // Jobs to release productized version of Ansible Collection
@@ -23,9 +23,9 @@ new ansibleCi.Builder(projectName:'jws-dot', moleculeBuildId: 28001, gitUrl: "gi
 //new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 // CI jobs for downstream (Janus generated) collections
-downstreamCIJob(projectName: 'jws-ansible-playbook', moleculeBuildId: 50001)
-downstreamCIJob(projectName:  'jboss_eap', moleculeBuildId: 50002)
-downstreamCIJob(projectName:'jws-dot', moleculeBuildId: 50003)
+downstreamCIJob('jws-ansible-playbook', "50001")
+downstreamCIJob('jboss_eap', "50002")
+downstreamCIJob('jws-dot', "50003")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
