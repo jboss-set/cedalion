@@ -1,15 +1,6 @@
 def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh") {
   new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId).build(this)
 }
-// Jobs to release productized version of Ansible Collection
-new ansibleCollection.Builder(collectionName:'redhat-csp-download').build(this)
-new ansibleCollection.Builder(collectionName:'jws').build(this)
-new ansibleCollection.Builder(collectionName:'ansible_collections_jcliff').build(this)
-new ansibleCollection.Builder(collectionName:'wildfly', downstreamName: 'jboss_eap').build(this)
-new ansibleCollection.Builder(collectionName:'infinispan', downstreamName: 'jboss_data_grid').build(this)
-new ansibleCollection.Builder(collectionName:'keycloak', downstreamName: 'rh_sso').build(this)
-new ansibleCollection.Builder(collectionName:'amq', downstreamName: 'amq').build(this)
-EapView.jobList(this, 'Ansible Collections', 'ansible-collection.*')
 // CI Jobs for Ansible Middleware
 //   Note that each CI job needs to increment the moleculeBuildId as
 //   this translate into a port number for SSHd running on the slave
