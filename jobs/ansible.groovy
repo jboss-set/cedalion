@@ -30,7 +30,7 @@ new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_eap', playbook: 'playbooks/jboss_eap.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-amq', playbook: 'playbooks/activemq.yml').build(this)
+new ansible.Builder(projectName:'janus', jobSuffix: '-amq', playbook: 'playbooks/amq_broker.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the downstream
 new ansibleDownstreamRunner.Builder(
