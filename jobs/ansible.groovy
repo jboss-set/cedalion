@@ -23,7 +23,7 @@ new ansibleCi.Builder(projectName:'jws-dot', moleculeBuildId: 28001, gitUrl: "gi
 //new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 // CI jobs for downstream (Janus generated) collections
-downstreamCIJob('jws-ansible-playbook', "50001")
+downstreamCIJob('jws', "50001")
 downstreamCIJob('jboss_eap', "50002")
 downstreamCIJob('jws-dot', "50003")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
