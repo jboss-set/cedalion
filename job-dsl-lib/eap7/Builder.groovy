@@ -81,6 +81,14 @@ class Builder {
                 name ("HARMONIA_SCRIPT")
                 defaultValue(harmoniaScript)
             }
+            stringParam {
+                name("HARMONIA_BRANCH")
+                defaultValue("olympus")
+            }
+            stringParam {
+                name("HARMONIA_REPO")
+                defaultValue("https://github.com/jboss-set/harmonia.git")
+            }
         }
     }
 }
