@@ -1,0 +1,104 @@
+def lookupLastSuccessfulBuildId(String parent_jobname) {
+  echo "Fetching last successful build ID of parent job:" + parent_jobname
+  def lastSuccessfulBuildId = sh(script:"/var/jenkins_home/fetchLastSuccessfulBuildId.sh ${parent_jobname}", returnStdout: true)
+  echo "PARENT JOB LAST SUCCESSFUL BUILD ID: " + lastSuccessfulBuildId
+  if ( "${lastSuccessfulBuildId}".equals("0") ) {
+    error("Build failed because parent job has never run.")
+  }
+  return lastSuccessfulBuildId.trim()
+}
+
+
+def dumpParams(String outputFile) {
+  echo "Dumping all parameters to " + outputFile
+  def lines = ""
+  params.each() { param, value ->
+    lines = lines + "${param}=\"${value}\"\n"
+  }
+  lines = lines + "LAST_SUCCESS_FULL_BUILD_ID=\"${env.LAST_SUCCESS_FULL_BUILD_ID}\"\n"
+  lines = lines + "PARENT_JOB_HOME=\"${env.PARENT_JOB_HOME}\"\n"
+  writeFile file: outputFile, text: lines
+}
+
+pipeline {
+    agent any
+
+   options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        disableConcurrentBuilds()
+     }
+
+    stages {
+        stage('Main') {
+            steps {
+                cleanWs()
+                script {
+                    echo "JOB_NAME:[${env.JOB_NAME}]"
+                    echo "SCRIPT:[${env.PATH_TO_SCRIPT}]"
+                    echo "MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL:[${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}]"
+                    // warning, GIT_BRANCH var alreads points to pipeline's branch
+                    if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
+                      env.GIT_REPOSITORY_BRANCH = "master"
+                    }
+                    echo "GIT_REPOSITORY_BRANCH:[${env.GIT_REPOSITORY_BRANCH}]"
+                }
+
+                dir('hera') {
+                  git branch: 'master', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                }
+
+                dir('harmonia') {
+                  git branch: "${env.HARMONIA_BRANCH}", url: "${env.HARMONIA_REPO}", poll: false, changelog: false
+                }
+
+                dir('workdir') {
+                  git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                }
+
+                dir('eris') {
+                  git branch: 'main', url: 'git@github.com:jboss-set/eris.git'
+                }
+
+                script {
+                    def parent_jobname = "ansible-janus-${env.PROJECT_NAME}"
+                    def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
+                    env.PARENT_JOB_HOME = "${parent_job_home}"
+                    env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
+                    echo "Retrieve build id from ${env.PARENT_JOB_HOME}."
+                    env.LAST_SUCCESS_FULL_BUILD_ID = lookupLastSuccessfulBuildId(parent_jobname)
+                    //TODO:
+                    // if tag provided then => git url: "${env.GIT_REPOSITORY_URL}(gitlab)", branch: "${env.GIT_REPOSITORY_BRANCH}(tag)"
+                    // else:
+                    echo "Run Molecule CI ${env.JOB_NAME} with last successful Janus build: ${env.LAST_SUCCESS_FULL_BUILD_ID}."
+                    env.BUILD_SCRIPT = "${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}"
+                    env.WORKDIR = "${env.WORKSPACE}/workdir/"
+                    env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL = "${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}"
+                    dumpParams("${env.WORKSPACE}/job_params.txt")
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
+                    sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
+                    findText(textFinders: [
+                      textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
+                    ])
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+             try {
+                  sh label: '', script: "${env.WORKSPACE}/hera/hera.sh stop"
+              } catch (err) {
+                  echo "Error while deleting container: ${err}"
+              }
+            }
+            cleanWs()
+        }
+        failure {
+            mail to: 'Romain Pelisse <rpelisse@redhat.com>, Guido Grazioli <ggraziol@redhat.com>',
+                 from: 'Romain Pelisse <rpelisse@redhat.com>',
+                 subject: "Build: ${env.JOB_NAME} - Failed",
+                 body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}\n\nBlue Ocean:\n${env.RUN_DISPLAY_URL}"
+        }
+    }
+}
