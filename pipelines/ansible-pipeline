@@ -47,7 +47,7 @@ pipeline {
                     dumpParams("${env.WORKSPACE}/job_params.txt")
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
-                    archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+                    archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: true, onlyIfSuccessful: true
                }
            }
         }

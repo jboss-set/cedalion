@@ -1,5 +1,5 @@
-def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh") {
-  new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId).build(this)
+def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh", scenarioName = "--all") {
+  new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId, scenarioName: scenarioName).build(this)
 }
 // CI Jobs for Ansible Middleware
 //   Note that each CI job needs to increment the moleculeBuildId as
@@ -16,6 +16,7 @@ EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 downstreamCIJob('jws', "50001")
 downstreamCIJob('jboss_eap', "50002")
 downstreamCIJob('jws-dot', "50003")
+downstreamCIJob('amq', "50004", scenarioName: 'default,amq_upgrade')
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
