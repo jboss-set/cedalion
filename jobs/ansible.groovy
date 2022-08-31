@@ -17,7 +17,7 @@ downstreamCIJob('jws', "30001")
 downstreamCIJob('jboss_eap', "30002")
 downstreamCIJob('jws-dot', "30003")
 //TOFIX: downstreamCIJob('amq', "30004", scenarioName: "default,amq_upgrade")
-new ansibleCi.Builder(projectName:'amq', scenarioName: "default,amq_upgrade", projectPrefix: "ansible-downstream-ci", pipelineFile: "pipelines/ansible-downstream-ci-pipeline", pathToScript: "molecule-downstream.sh", moleculeBuildId: 30004).build(this)
+new ansibleCi.Builder(projectName:'amq_broker', scenarioName: "default,amq_upgrade", projectUpstreamName: 'amq', projectPrefix: "ansible-downstream-ci", pipelineFile: "pipelines/ansible-downstream-ci-pipeline", pathToScript: "molecule-downstream.sh", moleculeBuildId: 30004).build(this)
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)

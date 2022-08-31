@@ -3,6 +3,7 @@ package ansibleCi
 class Builder {
 
     String projectName
+    String projectUpstreamName
     String projectPrefix = "ansible-ci"
     String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
@@ -35,6 +36,10 @@ class Builder {
                     stringParam {
                       name("PROJECT_NAME")
                       defaultValue(projectName)
+                    }
+                    stringParam {
+                      name("PROJECT_UPSTREAM_NAME")
+                      defaultValue(projectUpstreamName ?: projectName)
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")

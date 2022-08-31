@@ -55,7 +55,7 @@ pipeline {
                 }
 
                 script {
-                    def parent_jobname = "ansible-janus-${env.PROJECT_NAME}"
+                    def parent_jobname = "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
                     def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
                     env.PARENT_JOB_HOME = "${parent_job_home}"
                     env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
