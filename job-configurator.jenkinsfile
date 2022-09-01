@@ -1,6 +1,6 @@
 
 MAIL_RECIPIENTS = "null@null.nu"
-LABEL = "master"
+LABEL = "built-in"
 JOBDSL_REMOVE_MISSING = env.JOB_CONFIGURATOR_JOBDSL_REMOVE_MISSING ? Boolean.valueOf(env.JOB_CONFIGURATOR_JOBDSL_REMOVE_MISSING) : false
 
 // Setting defaults for instances that consume jenkinsfile with the feature before reapplying the casc that do not yet set the parameters
