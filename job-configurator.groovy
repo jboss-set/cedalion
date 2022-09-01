@@ -23,8 +23,8 @@ pipelineJob("job-configurator") {
     triggers {
         scm('H/15 * * * *')
         hudsonStartupTrigger {
-            nodeParameterName("master")
-            label("master")
+            nodeParameterName("built-in")
+            label("built-in")
             quietPeriod("0")
             runOnChoice("False")
           }
