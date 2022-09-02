@@ -32,7 +32,7 @@ new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix
 //new ansibleCi.Builder(projectName:'jws-app-update-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 42003).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
-new ansibleJanus.Builder(projectName: 'redhat_csp_download').build(this)
+new ansibleJanus.Builder(projectName: 'redhat-csp-download').build(this)
 new ansibleJanus.Builder(projectName: 'jws').build(this)
 new ansibleJanus.Builder(projectName: 'eap', projectUpstreamName: 'wildfly').build(this)
 new ansibleJanus.Builder(projectName: 'jboss_data_grid', projectUpstreamName: 'infinispan').build(this)
