@@ -3,6 +3,7 @@ package ansibleJanus
 class Builder {
 
     String projectName = 'janus'
+    String projectUpstreamName
     String jobPrefix = 'ansible-'
     String jobSuffix = ''
     String branch = "main"
@@ -34,6 +35,10 @@ class Builder {
                     stringParam {
                       name("PROJECT_NAME")
                       defaultValue(projectName)
+                    }
+                    stringParam {
+                      name("PROJECT_UPSTREAM_NAME")
+                      defaultValue(projectUpstreamName ?: projectName)
                     }
                     stringParam {
                       name ("PATH_TO_SCRIPT")
