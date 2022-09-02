@@ -61,6 +61,14 @@ class Builder {
                       defaultValue('olympus')
                     }
                     stringParam {
+                      name ("JANUS_GIT_REPOSITORY_URL")
+                      defaultValue("https://github.com/ansible-middleware/janus.git")
+                    }
+                    stringParam {
+                      name ("JANUS_BRANCH")
+                      defaultValue("main")
+                    }
+                    stringParam {
                       name ("BUILD_PODMAN_IMAGE")
                       defaultValue(podmanImage)
                     }
