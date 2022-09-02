@@ -34,8 +34,9 @@ pipeline {
                 }
 
                 dir('harmonia') {
-                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                  git branch: "${env.HARMONIA_BRANCH}", url: "${env.HARMONIA_REPO}", poll: false, changelog: false
                 }
+
 
                 dir('workdir') {
                   git branch: "${env.JANUS_BRANCH}", url: "${env.JANUS_GIT_REPOSITORY_URL}"
