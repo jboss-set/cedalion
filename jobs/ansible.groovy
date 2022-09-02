@@ -32,12 +32,12 @@ new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix
 //new ansibleCi.Builder(projectName:'jws-app-update-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 42003).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
-new ansibleJanus.Builder(jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
-new ansibleJanus.Builder(jobSuffix: '-jws', playbook: 'playbooks/jws.yml').build(this)
-new ansibleJanus.Builder(jobSuffix: '-eap', playbook: 'playbooks/eap.yml').build(this)
-new ansibleJanus.Builder(jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
-new ansibleJanus.Builder(jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
-new ansibleJanus.Builder(jobSuffix: '-amq', playbook: 'playbooks/amq_broker.yml').build(this)
+new ansibleJanus.Builder(projectName: 'redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
+new ansibleJanus.Builder(projectName: 'jws', playbook: 'playbooks/jws.yml').build(this)
+new ansibleJanus.Builder(projectName: 'eap', playbook: 'playbooks/eap.yml').build(this)
+new ansibleJanus.Builder(projectName: 'jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
+new ansibleJanus.Builder(projectName: 'rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
+new ansibleJanus.Builder(projectName: 'amq', playbook: 'playbooks/amq_broker.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the default playbook of the downstream (Janus generated) collection
 new ansibleDownstreamRunner.Builder(

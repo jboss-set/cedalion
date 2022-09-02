@@ -2,9 +2,9 @@ package ansibleJanus
 
 class Builder {
 
-    String projectName = 'janus'
+    String projectName
     String projectUpstreamName
-    String jobPrefix = 'ansible-'
+    String jobPrefix = 'ansible-janus'
     String jobSuffix = ''
     String branch = "main"
     String schedule = 'H/10 * * * *'
