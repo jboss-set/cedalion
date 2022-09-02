@@ -24,7 +24,7 @@ EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // DOT jobs
 String dotJobsPrefix = "ansible-downstream-tests"
 new ansibleCi.Builder(projectName: "jws-dot", projectUpstreamName: "jws", projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this)
-EapView.jobList(this, 'Ansible DOT CI', dotJobsPrefix + '.*$')
+EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 40002).build(this)
@@ -32,12 +32,12 @@ new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix
 //new ansibleCi.Builder(projectName:'jws-app-update-demo', branch: 'main', projectPrefix: 'ansible', moleculeBuildId: 42003).build(this)
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
-new ansible.Builder(projectName:'janus', jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks/jws.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-eap', playbook: 'playbooks/eap.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-amq_broker', playbook: 'playbooks/amq_broker.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-jws', playbook: 'playbooks/jws.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-eap', playbook: 'playbooks/eap.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
+new ansibleJanus.Builder(jobSuffix: '-amq', playbook: 'playbooks/amq_broker.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the default playbook of the downstream (Janus generated) collection
 new ansibleDownstreamRunner.Builder(

@@ -1,8 +1,8 @@
-package ansible
+package ansibleJanus
 
 class Builder {
 
-    String projectName
+    String projectName = 'janus'
     String jobPrefix = 'ansible-'
     String jobSuffix = ''
     String branch = "main"
@@ -17,7 +17,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-pipeline'))
+                        script(readFileFromWorkspace('pipelines/ansible-janus-pipeline'))
                         sandbox()
                     }
                 }
