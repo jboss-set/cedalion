@@ -22,7 +22,7 @@ downstreamCIJob('jws-dot', 30003)
 downstreamCIJob('amq', 30004, "default,amq_upgrade")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // DOT jobs
-val dotJobsPrefix = "ansible-downstream-tests"
+String dotJobsPrefix = "ansible-downstream-tests"
 new ansibleCi.Builder(projectName: "jws-dot", projectUpstreamName: "jws", projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this)
 EapView.jobList(this, 'Ansible DOT CI', dotJobsPrefix + '.*$')
 // CI Jobs for demos
@@ -34,7 +34,7 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
 new ansible.Builder(projectName:'janus', jobSuffix: '-redhat_csp_download', playbook: 'playbooks/redhat_csp_download.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks/jws.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_eap', playbook: 'playbooks/jboss_eap.yml').build(this)
+new ansible.Builder(projectName:'janus', jobSuffix: '-eap', playbook: 'playbooks/eap.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-amq_broker', playbook: 'playbooks/amq_broker.yml').build(this)
@@ -47,7 +47,7 @@ new ansibleDownstreamRunner.Builder(
   products_paths: '/webserver/5.6.0/jws-5.6.0-application-server.zip,/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip'
   ).build(this)
 new ansibleDownstreamRunner.Builder(
-  projectName: 'jboss_eap',
+  projectName: 'eap',
   playbook: 'playbooks/playbook.yml',
   collections: 'redhat_csp_download',
   products_paths: '/eap7/7.4.5/jboss-eap-7.4.5.zip'
