@@ -53,12 +53,12 @@ class Builder {
                       defaultValue(branch)
                     }
                     stringParam {
-                      name ("JANUS_GIT_REPOSITORY_URL")
-                      defaultValue("https://github.com/ansible-middleware/janus.git")
+                      name ("HARMONIA_REPO")
+                      defaultValue('https://github.com/jboss-set/harmonia.git')
                     }
                     stringParam {
-                      name ("JANUS_BRANCH")
-                      defaultValue("main")
+                      name ("HARMONIA_BRANCH")
+                      defaultValue('olympus')
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
