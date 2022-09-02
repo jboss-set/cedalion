@@ -30,11 +30,11 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git branch: 'jenkins_jobs_vol', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                  git branch: 'master', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
-                  git branch: 'ansible-playbook', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
                 }
 
                 dir('workdir') {
