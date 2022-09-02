@@ -22,7 +22,9 @@ downstreamCIJob('jws-dot', 30003)
 downstreamCIJob('amq', 30004, "default,amq_upgrade")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // DOT jobs
-new ansibleCi.Builder(projectName: "jws-dot", projectPrefix: "ansible-downstream-tests", pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this)
+val dotJobsPrefix = "ansible-downstream-tests"
+new ansibleCi.Builder(projectName: "jws-dot", projectUpstreamName: "jws", projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this)
+EapView.jobList(this, 'Ansible DOT CI', dotJobsPrefix + '.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
 new ansibleCi.Builder(projectName:'flange-demo', branch: 'master', projectPrefix: 'ansible', moleculeBuildId: 40002).build(this)
