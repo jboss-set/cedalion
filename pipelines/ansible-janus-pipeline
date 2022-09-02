@@ -38,7 +38,7 @@ pipeline {
                 }
 
                 dir('workdir') {
-                  git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                  git branch: "${env.JANUS_BRANCH}", url: "${env.JANUS_GIT_REPOSITORY_URL}"
                 }
 
                 script {
