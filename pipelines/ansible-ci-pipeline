@@ -30,7 +30,7 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                  git branch: 'master', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
