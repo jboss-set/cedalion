@@ -4,13 +4,13 @@ class Builder {
 
     String projectName
     String projectUpstreamName
-    String jobPrefix = 'ansible-janus'
+    String jobPrefix = 'ansible-janus-'
     String jobSuffix = ''
     String branch = "main"
     String schedule = 'H/10 * * * *'
     String podmanImage = "localhost/ansible"
     String pathToScript = "ansible-playbook.sh"
-    String playbook = 'playbook.yml'
+    String playbook = 'playbooks/job.yml'
 
     def build(factory) {
         factory.with {
@@ -46,11 +46,19 @@ class Builder {
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
-                      defaultValue("https://github.com/ansible-middleware/" + projectName + ".git")
+                      defaultValue("https://github.com/ansible-middleware/" + (projectUpstreamName ?: projectName) + ".git")
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
                       defaultValue(branch)
+                    }
+                    stringParam {
+                      name ("JANUS_GIT_REPOSITORY_URL")
+                      defaultValue("https://github.com/ansible-middleware/janus.git")
+                    }
+                    stringParam {
+                      name ("JANUS_BRANCH")
+                      defaultValue("main")
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
