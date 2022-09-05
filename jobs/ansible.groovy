@@ -1,3 +1,6 @@
+def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all")
+  new ansibleCi.Builder(projectName: projectName, moleculeBuildId: moleculeBuildId, scenarioName: scenarioName, downloadServerUrl: '').build(this)
+}
 def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downstream-ci", pipelineFile = "pipelines/ansible-downstream-ci-pipeline", pathToScript = "molecule-downstream.sh", scenarioName = "--all") {
   new ansibleCi.Builder(projectName: projectName, projectPrefix: projectPrefix, pipelineFile: pipelineFile, pathToScript: pathToScript, moleculeBuildId: moleculeBuildId, scenarioName: scenarioName).build(this)
 }
@@ -5,11 +8,11 @@ def downstreamCIJob(projectName, moleculeBuildId, projectPrefix = "ansible-downs
 //   Note that each CI job needs to increment the moleculeBuildId as
 //   this translate into a port number for SSHd running on the slave
 //   container (and thus, needs to be unique).
-new ansibleCi.Builder(projectName:'jws', moleculeBuildId: 22001).build(this)
-new ansibleCi.Builder(projectName:'wildfly', moleculeBuildId: 23001).build(this)
-new ansibleCi.Builder(projectName:'infinispan', moleculeBuildId: 25001).build(this)
-new ansibleCi.Builder(projectName:'keycloak', moleculeBuildId: 26001).build(this)
-new ansibleCi.Builder(projectName:'amq', scenarioName: "default,amq_upgrade", moleculeBuildId: 27001).build(this)
+upstreamCIJob('jws', 22001)
+upstreamCIJob('wildfly', moleculeBuildId: 23001)
+upstreamCIJob('infinispan', moleculeBuildId: 25001)
+upstreamCIJob('keycloak', moleculeBuildId: 26001)
+upstreamCIJob('amq', moleculeBuildId: 27001, scenarioName: "default,amq_upgrade")
 //new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 // CI jobs for downstream (Janus generated) collections
@@ -31,7 +34,7 @@ new ansible.Builder(projectName:'janus', jobSuffix: '-jws', playbook: 'playbooks
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_eap', playbook: 'playbooks/jboss_eap.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-jboss_data_grid', playbook: 'playbooks/jboss_data_grid.yml').build(this)
 new ansible.Builder(projectName:'janus', jobSuffix: '-rh_sso', playbook: 'playbooks/rh_sso.yml').build(this)
-new ansible.Builder(projectName:'janus', jobSuffix: '-amq', playbook: 'playbooks/amq_broker.yml').build(this)
+new ansible.Builder(projectName:'janus', jobSuffix: '-amq_broker', playbook: 'playbooks/amq_broker.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the default playbook of the downstream (Janus generated) collection
 new ansibleDownstreamRunner.Builder(
