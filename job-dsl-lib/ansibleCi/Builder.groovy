@@ -12,7 +12,7 @@ class Builder {
     String schedule = 'H/10 * * * *'
     String pipelineFile = "pipelines/ansible-ci-pipeline"
     String pathToScript  = "molecule.sh"
-    String downloadServerUrl = MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL
+    String downloadServerUrl
 
     def build(factory) {
         factory.with {
@@ -86,7 +86,7 @@ class Builder {
                     }
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
-                      defaultValue(downloadServerUrl)
+                      defaultValue(downloadServerUrl ?: MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name("SCENARIO_NAME")
