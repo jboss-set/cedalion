@@ -86,7 +86,7 @@ class Builder {
                     }
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
-                      defaultValue(downloadServerUrl ?: MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
+                      defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name("SCENARIO_NAME")
