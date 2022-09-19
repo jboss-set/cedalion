@@ -20,6 +20,8 @@ downstreamCIJob('jws', 30001)
 downstreamCIJob('eap', 30002)
 downstreamCIJob('jws-dot', 30003)
 downstreamCIJob('amq', 30004, "default,amq_upgrade")
+downstreamCIJob('data_grid', 30005)
+downstreamCIJob('sso', 30006)
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // DOT jobs
 String dotJobsPrefix = "ansible-downstream-tests"
@@ -34,10 +36,10 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 // Janus jobs - generating downstream collections
 new ansibleJanus.Builder(projectName: 'redhat_csp_download').build(this)
 new ansibleJanus.Builder(projectName: 'jws').build(this)
-new ansibleJanus.Builder(projectName: 'eap', projectUpstreamName: 'wildfly').build(this)
-new ansibleJanus.Builder(projectName: 'jboss_data_grid', projectUpstreamName: 'infinispan').build(this)
-new ansibleJanus.Builder(projectName: 'rh_sso', projectUpstreamName: 'keycloak').build(this)
-new ansibleJanus.Builder(projectName: 'amq').build(this)
+new ansibleJanus.Builder(projectName: 'eap', projectUpstreamName: 'wildfly', playbook: 'playbooks/eap.yml').build(this)
+new ansibleJanus.Builder(projectName: 'data_grid', projectUpstreamName: 'infinispan', playbook: 'playbooks/data_grid.yml').build(this)
+new ansibleJanus.Builder(projectName: 'sso', projectUpstreamName: 'keycloak').build(this)
+new ansibleJanus.Builder(projectName: 'amq_broker', projectUpstreamName: 'amq', playbook: 'playbooks/amq_broker.yml').build(this)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 // Job testing the default playbook of the downstream (Janus generated) collection
 new ansibleDownstreamRunner.Builder(
