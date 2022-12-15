@@ -25,7 +25,12 @@ downstreamCIJob('sso', 30006)
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 // DOT jobs
 String dotJobsPrefix = "ansible-downstream-tests"
-new ansibleCi.Builder(projectName: "jws-dot", projectUpstreamName: "jws", projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this)
+def dot_projects = ['jws', 'eap']
+dot_projects.each { project -> new ansibleCi.Builder(projectName: project + "-dot", projectUpstreamName: project, projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 31001).build(this) }
+new ansibleCi.Builder(projectName: "eap-dot", projectUpstreamName: "eap", projectPrefix: dotJobsPrefix, pipelineFile: "pipelines/ansible-downstream-dot-pipeline", pathToScript: "molecule-downstream.sh", gitUrl: 'git@gitlab:ansible-middleware/', moleculeBuildId: 32001).build(this)
+EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
+// CI Jobs for demos
+
 EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 // CI Jobs for demos
 new ansibleCi.Builder(projectName:'wildfly-cluster-demo', projectPrefix: 'ansible', moleculeBuildId: 40001).build(this)
@@ -53,5 +58,11 @@ new ansibleDownstreamRunner.Builder(
   playbook: 'playbooks/playbook.yml',
   collections: 'redhat_csp_download',
   products_paths: '/eap7/7.4.5/jboss-eap-7.4.5.zip'
+  ).build(this)
+new ansibleDownstreamRunner.Builder(
+  projectName: 'sso',
+  playbook: 'playbooks/playbook.yml',
+  collections: 'redhat_csp_download',
+  products_paths: '/sso/7.6.1/rh-sso-7.6.1-server-dist.zip'
   ).build(this)
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
