@@ -4,6 +4,7 @@ class Builder {
 
     String projectName
     String projectUpstreamName
+    String projectUrl = "https://github.com/ansible-middleware/" + (projectUpstreamName ?: projectName) + ".git"
     String jobPrefix = 'ansible-janus-'
     String jobSuffix = ''
     String branch = "main"
@@ -46,7 +47,7 @@ class Builder {
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
-                      defaultValue("https://github.com/ansible-middleware/" + (projectUpstreamName ?: projectName) + ".git")
+                      defaultValue(projectUrl)
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
