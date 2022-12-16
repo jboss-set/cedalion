@@ -57,12 +57,12 @@ new ansibleDownstreamRunner.Builder(
   projectName: 'eap',
   playbook: 'playbooks/playbook.yml',
   collections: 'redhat_csp_download',
-  products_paths: '/eap7/7.4.5/jboss-eap-7.4.5.zip'
+  products_paths: '/eap7/7.4.0/jboss-eap-7.4.0.zip'
   ).build(this)
 new ansibleDownstreamRunner.Builder(
   projectName: 'sso',
   playbook: 'playbooks/playbook.yml',
   collections: 'redhat_csp_download',
-  products_paths: '/sso/7.6.1/rh-sso-7.6.1-server-dist.zip'
+  products_paths: '/sso/7.6.0/rh-sso-7.6.0-server-dist.zip'
   ).build(this)
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
