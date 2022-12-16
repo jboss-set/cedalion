@@ -6,7 +6,7 @@ class Builder {
     String jobPrefix = 'ansible-downstream-runner-'
     String jobSuffix = ''
     String schedule = 'H/10 * * * *'
-    String podmanImage = "localhost/molecule-slave"
+    String podmanImage = "localhost/molecule-runner"
     String pathToScript = "ansible-validate-downstream-collection.sh"
     String playbook = 'playbooks/playbook.yml'
     String collections
