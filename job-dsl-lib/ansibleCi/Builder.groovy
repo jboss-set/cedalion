@@ -4,19 +4,22 @@ class Builder {
 
     String projectName
     String projectUpstreamName
-    String projectPrefix = "ansible-ci"
-    String moleculeBuildId
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
-    String scenarioName = "--all"
     String schedule = 'H/10 * * * *'
-    String pipelineFile = "pipelines/ansible-ci-pipeline"
-    String pathToScript  = "molecule.sh"
+    String jobPrefix = ''
+    String jobSuffix = ''
+    String pipelineFile
+    String podmanImage
+    String pathToScript
     String downloadServerUrl
+
+    String scenarioName = "--all"
+    String moleculeBuildId
 
     def build(factory) {
         factory.with {
-            pipelineJob(projectPrefix + '-' + projectName) {
+            pipelineJob(jobPrefix + projectName + jobSuffix) {
 
                 definition {
                     cps {
@@ -64,7 +67,11 @@ class Builder {
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
-                      defaultValue("localhost/molecule-runner")
+                      defaultValue(podmanImage)
+                    }
+                    stringParam {
+                      name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
+                      defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name ("TOOLS_DIR")
@@ -83,10 +90,6 @@ class Builder {
                     stringParam {
                       name ("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
-                    }
-                    stringParam {
-                      name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
-                      defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
                       name("SCENARIO_NAME")
