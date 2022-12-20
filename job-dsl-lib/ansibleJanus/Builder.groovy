@@ -4,13 +4,16 @@ class Builder {
 
     String projectName
     String projectUpstreamName
-    String projectUrl = "https://github.com/ansible-middleware/" + (projectUpstreamName ?: projectName) + ".git"
-    String jobPrefix = 'ansible-janus-'
-    String jobSuffix = ''
+    String projectUrl
     String branch = "main"
     String schedule = 'H/10 * * * *'
+    String jobPrefix = ''
+    String jobSuffix = ''
+    String pipelineFile
     String podmanImage = "localhost/ansible"
-    String pathToScript = "ansible-playbook.sh"
+    String pathToScript
+    String downloadServerUrl
+
     String playbook = 'playbooks/job.yml'
 
     def build(factory) {
@@ -19,7 +22,7 @@ class Builder {
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/ansible-janus-pipeline'))
+                        script(readFileFromWorkspace(pipelineFile))
                         sandbox()
                     }
                 }
@@ -62,20 +65,24 @@ class Builder {
                       defaultValue('olympus')
                     }
                     stringParam {
+                      name ("BUILD_PODMAN_IMAGE")
+                      defaultValue(podmanImage)
+                    }
+                    stringParam {
+                      name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
+                      defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
+                    }
+                    stringParam {
+                      name ("PLAYBOOK")
+                      defaultValue(playbook)
+                    }
+                    stringParam {
                       name ("JANUS_GIT_REPOSITORY_URL")
                       defaultValue("https://github.com/ansible-middleware/janus.git")
                     }
                     stringParam {
                       name ("JANUS_BRANCH")
                       defaultValue("main")
-                    }
-                    stringParam {
-                      name ("BUILD_PODMAN_IMAGE")
-                      defaultValue(podmanImage)
-                    }
-                    stringParam {
-                      name ("PLAYBOOK")
-                      defaultValue(playbook)
                     }
                 }
             }
