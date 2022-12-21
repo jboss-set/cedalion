@@ -1,5 +1,5 @@
 def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
-  new ansibleCi.Builder(
+  new ansible.MoleculeBuilder(
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
@@ -10,7 +10,7 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
     ).build(this)
 }
 def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
-  new ansibleCi.Builder(
+  new ansible.MoleculeBuilder(
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
@@ -22,33 +22,33 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
 }
 
 def janusJob(projectName, projectUpstreamName = projectName, playbook = "playbooks/job.yml") {
-  new ansibleJanus.Builder(
+  new ansible.JanusBuilder(
         projectName: projectName,
+        projectUpstreamName: projectUpstreamName,
+        playbook: playbook,
+        gitUrl: 'https://github.com/ansible-middleware/' + projectUpstreamName + '.git',
         jobPrefix: 'ansible-janus-',
         pipelineFile: 'pipelines/ansible-janus-pipeline',
         pathToScript: 'ansible-playbook.sh',
-        projectUrl: 'https://github.com/ansible-middleware/' + projectUpstreamName + '.git',
-        projectUpstreamName: projectUpstreamName,
-        playbook: playbook,
-        podmanImage: 'localhost/ansible',
+        podmanImage: 'localhost/ansible'
     ).build(this)
 }
 
 def dotJob(projectName, dotJobsPrefix, portOffset) {
-   new ansibleCi.Builder(
+   new ansible.MoleculeBuilder(
      projectName: projectName + "-dot",
-        projectUpstreamName: projectName,
-        jobPrefix: dotJobsPrefix,
-        pipelineFile: "pipelines/ansible-downstream-dot-pipeline",
-        pathToScript: "molecule-downstream.sh",
-        podmanImage: 'localhost/molecule-runner',
-        gitUrl: 'git@gitlab:ansible-middleware/',
-        moleculeBuildId: portOffset
+     projectUpstreamName: projectName,
+     jobPrefix: dotJobsPrefix,
+     moleculeBuildId: portOffset,
+     pipelineFile: "pipelines/ansible-downstream-dot-pipeline",
+     pathToScript: "molecule-downstream.sh",
+     podmanImage: 'localhost/molecule-runner',
+     gitUrl: 'git@gitlab:ansible-middleware/',
     ).build(this)
 }
 
 def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
-  new ansibleCi.Builder(
+  new ansible.MoleculeBuilder(
       projectName: projectName,
       moleculeBuildId: portOffset,
       jobPrefix: jobPrefix,
@@ -59,7 +59,7 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
 }
 
 def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
-  new ansibleDownstreamRunner.Builder(
+  new ansible.RunnerBuilder(
         projectName: projectName,
         playbook: playbook,
         collections: collections,
