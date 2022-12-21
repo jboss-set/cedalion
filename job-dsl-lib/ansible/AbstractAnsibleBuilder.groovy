@@ -1,12 +1,14 @@
-package ansibleDownstreamRunner
+package ansible
 
-class Builder {
+class AbstractAnsibleBuilder {
 
     String projectName
     String projectUpstreamName
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
     String schedule = 'H/10 * * * *'
+    String harmoniaGitUrl = 'https://github.com/jboss-set/harmonia.git'
+    String harmoniaBranch = 'olympus'
     String jobPrefix = ''
     String jobSuffix = ''
     String pipelineFile
@@ -14,13 +16,8 @@ class Builder {
     String pathToScript
     String downloadServerUrl
 
-    String playbook = 'playbooks/playbook.yml'
-
-    String collections
-    String products_paths
-
     def build(factory) {
-        factory.with {
+        return factory.with {
             pipelineJob(jobPrefix + projectName + jobSuffix) {
 
                 definition {
@@ -53,7 +50,7 @@ class Builder {
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_URL")
-                      defaultValue(gitUrl + projectName + ".git")
+                      defaultValue(gitUrl)
                     }
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
@@ -61,11 +58,11 @@ class Builder {
                     }
                     stringParam {
                       name ("HARMONIA_REPO")
-                      defaultValue('https://github.com/jboss-set/harmonia.git')
+                      defaultValue(harmoniaGitUrl)
                     }
                     stringParam {
                       name ("HARMONIA_BRANCH")
-                      defaultValue('olympus')
+                      defaultValue(harmoniaBranch)
                     }
                     stringParam {
                       name ("BUILD_PODMAN_IMAGE")
@@ -76,42 +73,18 @@ class Builder {
                       defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
-                      name("JENKINS_JOBS_VOLUME_ENABLED")
+                      name ("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
                     }
                     stringParam {
-                      name ("CONTAINER_UID")
-                      defaultValue('0')
-                    }
-                    stringParam {
-                      name("CONTAINER_USERNAME")
-                      defaultValue('root')
-                    }
-                    stringParam {
-                      name("CONTAINER_COMMAND")
-                      defaultValue('/usr/sbin/init')
-                    }
-                    stringParam {
-                      name("SYSTEMD_ENABLED")
-                      defaultValue('True')
-                    }
-                    stringParam {
-                      name("TOOLS_DIR")
+                      name ("TOOLS_DIR")
                       defaultValue("/not/there")
+                      description("This dummy value ensures the /opt folder is NOT added as a volume")
                     }
                     stringParam {
-                      name ("PATHS_TO_PRODUCTS_TO_DOWNLOAD")
-                      defaultValue(products_paths)
-                      description("A comma separated set of paths specifying where the product archive is located on the middleware release download server.")
-                    }
-                    stringParam {
-                      name ("PLAYBOOK")
-                      defaultValue(playbook)
-                    }
-                     stringParam {
-                      name ("COLLECTIONS_TO_INSTALL")
-                      defaultValue(collections)
-                      description("A comma separated list of the Red Hat collections to install. Ex: 'redhat_csp_download,jboss_eap'. Note that non Redhat collection will be installed automatically when the requirements.yml is processed.")
+                      name ("TOOLS_MOUNT")
+                      defaultValue("/not/there")
+                      description("This dummy value ensures the /opt folder is NOT added as a volume")
                     }
                 }
             }
