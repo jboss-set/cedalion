@@ -22,11 +22,14 @@ pipeline {
                 script {
                     echo "JOB_NAME:[${env.JOB_NAME}]"
                     echo "SCRIPT:[${env.PATH_TO_SCRIPT}]"
+                    echo "MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL:[${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}]"
                     // warning, GIT_BRANCH var alreads points to pipeline's branch
                     if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
-                      env.GIT_REPOSITORY_BRANCH = "master"
+                      env.GIT_REPOSITORY_BRANCH = "main"
                     }
+                    echo "GIT_REPOSITORY_URL:[${env.GIT_REPOSITORY_URL}]"
                     echo "GIT_REPOSITORY_BRANCH:[${env.GIT_REPOSITORY_BRANCH}]"
+                    env.WORKDIR = "${env.WORKSPACE}/workdir/"
                 }
 
                 dir('hera') {
@@ -37,17 +40,20 @@ pipeline {
                   git branch: "${env.HARMONIA_BRANCH}", url: "${env.HARMONIA_REPO}", poll: false, changelog: false
                 }
 
-                dir('workdir') {
-                  git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
-                }
-
                 dir('eris') {
                   git url: 'git@github.com:jboss-set/eris.git', branch: 'main'
                 }
 
                 script {
+                   if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
+                     dir('workdir') {
+                       git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                     }
+                   }
+                }
+
+                script {
                     env.BUILD_SCRIPT = "${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}"
-                    env.WORKDIR = "${env.WORKSPACE}/workdir/"
                     dumpParams("${env.WORKSPACE}/job_params.txt")
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"

@@ -6,6 +6,7 @@ class AbstractAnsibleBuilder {
     String projectUpstreamName
     String gitUrl = "https://github.com/ansible-middleware/"
     String branch = "main"
+    String checkoutProject = "True"
     String schedule = 'H/10 * * * *'
     String harmoniaGitUrl = 'https://github.com/jboss-set/harmonia.git'
     String harmoniaBranch = 'olympus'
@@ -55,6 +56,10 @@ class AbstractAnsibleBuilder {
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
                       defaultValue(branch)
+                    }
+                    stringParam {
+                      name("CHECKOUT_GIT_PROJECT")
+                      defaultValue(checkoutProject)
                     }
                     stringParam {
                       name ("HARMONIA_REPO")

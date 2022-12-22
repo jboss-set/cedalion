@@ -17,7 +17,8 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
         jobPrefix: "ansible-downstream-ci-",
         pipelineFile: "pipelines/ansible-downstream-ci-pipeline",
         podmanImage: 'localhost/molecule-runner',
-        pathToScript: "molecule-downstream.sh"
+        pathToScript: "molecule-downstream.sh",
+        checkoutProject: "False"
     ).build(this)
 }
 
@@ -40,10 +41,11 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      projectUpstreamName: projectName,
      jobPrefix: dotJobsPrefix,
      moleculeBuildId: portOffset,
-     pipelineFile: "pipelines/ansible-downstream-dot-pipeline",
+     checkoutProject: "False",
+     gitUrl: 'https://github.com/ansible-middleware/' + projectName + '.git',
+     pipelineFile: 'pipelines/ansible-downstream-ci-pipeline',
      pathToScript: "molecule-downstream.sh",
-     podmanImage: 'localhost/molecule-runner',
-     gitUrl: 'git@gitlab:ansible-middleware/',
+     podmanImage: 'localhost/molecule-runner'
     ).build(this)
 }
 

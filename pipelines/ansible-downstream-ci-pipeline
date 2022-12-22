@@ -25,6 +25,7 @@ pipeline {
 
    options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        disableConcurrentBuilds()
      }
 
     stages {
@@ -37,8 +38,9 @@ pipeline {
                     echo "MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL:[${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}]"
                     // warning, GIT_BRANCH var alreads points to pipeline's branch
                     if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
-                      env.GIT_REPOSITORY_BRANCH = "master"
+                      env.GIT_REPOSITORY_BRANCH = "main"
                     }
+                    echo "GIT_REPOSITORY_URL:[${env.GIT_REPOSITORY_URL}]"
                     echo "GIT_REPOSITORY_BRANCH:[${env.GIT_REPOSITORY_BRANCH}]"
                 }
 
@@ -51,7 +53,15 @@ pipeline {
                 }
 
                 dir('eris') {
-                  git branch: 'main', url: 'git@github.com:jboss-set/eris.git'
+                  git url: 'git@github.com:jboss-set/eris.git', branch: 'main'
+                }
+
+                script {
+                   if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
+                     dir('workdir') {
+                       git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                     }
+                  }
                 }
 
                 script {
@@ -59,6 +69,7 @@ pipeline {
                     def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
                     env.PARENT_JOB_HOME = "${parent_job_home}"
                     env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
+                    env.WORKDIR = "${env.WORKSPACE}/workdir/"
                     echo "Retrieve build id from ${env.PARENT_JOB_HOME}."
                     env.LAST_SUCCESS_FULL_BUILD_ID = lookupLastSuccessfulBuildId(parent_jobname)
                     //TODO:
