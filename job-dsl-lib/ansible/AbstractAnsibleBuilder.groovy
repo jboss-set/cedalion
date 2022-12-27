@@ -16,6 +16,7 @@ class AbstractAnsibleBuilder {
     String podmanImage
     String pathToScript
     String downloadServerUrl
+    String copyFromParentJob = "False"
 
     def build(factory) {
         return factory.with {
@@ -60,6 +61,10 @@ class AbstractAnsibleBuilder {
                     stringParam {
                       name("CHECKOUT_GIT_PROJECT")
                       defaultValue(checkoutProject)
+                    }
+                    stringParam {
+                      name("COPY_FROM_PARENT_JOB")
+                      defaultValue(copyFromParentJob)
                     }
                     stringParam {
                       name ("HARMONIA_REPO")
