@@ -7,6 +7,10 @@ def dumpParams(String outputFile) {
   writeFile file: outputFile, text: lines
 }
 
+def isJanusJob() {
+  return ! "${env.JANUS_BRANCH}".equals("") && ! "${env.JANUS_GIT_REPOSITORY_URL}".equals("")
+}
+
 pipeline {
     agent any
 
@@ -29,7 +33,9 @@ pipeline {
                     }
                     echo "GIT_REPOSITORY_URL:[${env.GIT_REPOSITORY_URL}]"
                     echo "GIT_REPOSITORY_BRANCH:[${env.GIT_REPOSITORY_BRANCH}]"
+                    echo "CHECKOUT_GIT_PROJECT:[${env.CHECKOUT_GIT_PROJECT}]"
                     env.WORKDIR = "${env.WORKSPACE}/workdir/"
+                    echo "WORKDIR: [${env.WORKDIR}]"
                 }
 
                 dir('hera') {
@@ -47,7 +53,14 @@ pipeline {
                 script {
                    if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
                      dir('workdir') {
+                       echo "Workdir is check out of project: ${env.CHECKOUT_GIT_PROJECT}:"
                        git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                     }
+                   }
+                   if ( isJanusJob() ) {
+                     dir('workdir') {
+                       echo "Workdir is checkout from Janus."
+                       git url: "${env.JANUS_GIT_REPOSITORY_URL}", branch: "${JANUS_BRANCH}"
                      }
                    }
                 }
@@ -60,6 +73,9 @@ pipeline {
                     findText(textFinders: [
                         textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
                     ])
+		    if ( isJanusJob() ) {
+                      archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: true, onlyIfSuccessful: true
+                    }
                }
            }
         }
@@ -73,6 +89,7 @@ pipeline {
                   echo "Error while deleting container: ${err}"
               }
             }
+            cleanWs()
         }
         failure {
             mail to: 'Romain Pelisse <rpelisse@redhat.com>, Guido Grazioli <ggraziol@redhat.com>',
