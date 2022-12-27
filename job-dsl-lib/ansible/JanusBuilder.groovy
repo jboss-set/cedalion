@@ -2,7 +2,7 @@ package ansible
 
 class JanusBuilder extends AbstractAnsibleBuilder {
 
-  String playbook = 'playbooks/playbook.yml'
+  String playbook = 'playbooks/job.yml'
 
   def build(factory) {
     super.build(factory).parameters {

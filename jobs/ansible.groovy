@@ -36,9 +36,10 @@ def janusJob(projectName, projectUpstreamName = projectName, playbook = "playboo
         playbook: playbook,
         gitUrl: buildGitUrl(projectUpstreamName),
         jobPrefix: 'ansible-janus-',
-        pipelineFile: 'pipelines/ansible-janus-pipeline',
+        pipelineFile: 'pipelines/ansible-ci-pipeline',
         pathToScript: 'ansible-playbook.sh',
-        podmanImage: 'localhost/ansible'
+        podmanImage: 'localhost/ansible',
+        checkoutProject: "False"
     ).build(this)
 }
 
