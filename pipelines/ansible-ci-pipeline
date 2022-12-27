@@ -8,7 +8,7 @@ def dumpParams(String outputFile) {
 }
 
 def isJanusJob() {
-  return ! "${env.JANUS_BRANCH}".equals("") && ! "${env.JANUS_GIT_REPOSITORY_URL}".equals("")
+  return (! "null".equalsIgnoreCase("${env.JANUS_BRANCH}") && ! "null".equalsIgnoreCase("${env.JANUS_GIT_REPOSITORY_URL}") )
 }
 
 pipeline {
@@ -53,7 +53,7 @@ pipeline {
                 script {
                    if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
                      dir('workdir') {
-                       echo "Workdir is check out of project: ${env.CHECKOUT_GIT_PROJECT}:"
+                       echo "Workdir is check out of project: ${env.GIT_REPOSITORY_URL}:"
                        git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
                      }
                    }
