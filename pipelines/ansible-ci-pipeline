@@ -94,6 +94,7 @@ pipeline {
                        git url: "${env.JANUS_GIT_REPOSITORY_URL}", branch: "${JANUS_BRANCH}"
                      }
                    }
+                   sh label: 'create-workdir', script: "mkdir -p ${env.WORKSPACE}/workdir/"
                 }
 
                 script {
