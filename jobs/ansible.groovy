@@ -1,19 +1,26 @@
+def buildGitUrl(projectName) {
+  return 'https://github.com/ansible-middleware/' + projectName + '.git'
+}
+
 def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
   new ansible.MoleculeBuilder(
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
+        gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-ci-",
         pipelineFile: "pipelines/ansible-ci-pipeline",
         pathToScript: 'molecule.sh',
         podmanImage: 'localhost/molecule-runner',
     ).build(this)
 }
+
 def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
   new ansible.MoleculeBuilder(
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
+        gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-downstream-ci-",
         pipelineFile: "pipelines/ansible-downstream-ci-pipeline",
         podmanImage: 'localhost/molecule-runner',
@@ -27,7 +34,7 @@ def janusJob(projectName, projectUpstreamName = projectName, playbook = "playboo
         projectName: projectName,
         projectUpstreamName: projectUpstreamName,
         playbook: playbook,
-        gitUrl: 'https://github.com/ansible-middleware/' + projectUpstreamName + '.git',
+        gitUrl: buildGitUrl(projectUpstreamName),
         jobPrefix: 'ansible-janus-',
         pipelineFile: 'pipelines/ansible-janus-pipeline',
         pathToScript: 'ansible-playbook.sh',
@@ -42,7 +49,7 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      jobPrefix: dotJobsPrefix,
      moleculeBuildId: portOffset,
      checkoutProject: "False",
-     gitUrl: 'https://github.com/ansible-middleware/' + projectName + '.git',
+     gitUrl: buildGitUrl(projectName),
      pipelineFile: 'pipelines/ansible-downstream-ci-pipeline',
      pathToScript: "molecule-downstream.sh",
      podmanImage: 'localhost/molecule-runner'
@@ -56,6 +63,7 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
       jobPrefix: jobPrefix,
       pipelineFile: "pipelines/ansible-ci-pipeline",
       pathToScript: "molecule.sh",
+      gitUrl: buildGitUrl(projectName),
       podmanImage: 'localhost/molecule-runner'
   ).build(this)
 }
