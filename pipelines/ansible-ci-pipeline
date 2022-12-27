@@ -1,8 +1,39 @@
+def lookupLastSuccessfulBuildId(String parent_jobname) {
+  echo "Fetching last successful build ID of parent job:" + parent_jobname
+  def lastSuccessfulBuildId = sh(script:"/var/jenkins_home/fetchLastSuccessfulBuildId.sh ${parent_jobname}", returnStdout: true)
+  echo "PARENT JOB LAST SUCCESSFUL BUILD ID: " + lastSuccessfulBuildId
+  if ( "${lastSuccessfulBuildId}".equals("0") ) {
+    error("Build failed because parent job has never run.")
+  }
+  return lastSuccessfulBuildId.trim()
+}
+
+def lastSuccessfullBuildOfParentJob() {
+  def parent_jobname = "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
+  def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
+  env.PARENT_JOB_HOME = "${parent_job_home}"
+  env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
+  echo "Retrieve build id from ${env.PARENT_JOB_HOME}."
+  env.LAST_SUCCESS_FULL_BUILD_ID = lookupLastSuccessfulBuildId(parent_jobname)
+  //TODO:
+  // if tag provided then => git url: "${env.GIT_REPOSITORY_URL}(gitlab)", branch: "${env.GIT_REPOSITORY_BRANCH}(tag)"
+  // else:
+  echo "Run ${env.JOB_NAME} with last successful Janus build ${env.LAST_SUCCESS_FULL_BUILD_ID} of ${parent_jobname}."
+}
+
+def isCopyFromParentJobRequired() {
+  return "True".equalsIgnoreCase("${env.COPY_FROM_PARENT_JOB}")
+}
+
 def dumpParams(String outputFile) {
   echo "Dumping all parameters to " + outputFile
   def lines = ""
   params.each() { param, value ->
     lines = lines + "${param}=\"${value}\"\n"
+  }
+  if ( isCopyFromParentJobRequired() ) {
+    lines = lines + "LAST_SUCCESS_FULL_BUILD_ID=\"${env.LAST_SUCCESS_FULL_BUILD_ID}\"\n"
+    lines = lines + "PARENT_JOB_HOME=\"${env.PARENT_JOB_HOME}\"\n"
   }
   writeFile file: outputFile, text: lines
 }
@@ -66,12 +97,15 @@ pipeline {
                 }
 
                 script {
+                    if ( isCopyFromParentJobRequired() ) {
+                       lastSuccessfullBuildOfParentJob()
+                    }
                     env.BUILD_SCRIPT = "${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}"
                     dumpParams("${env.WORKSPACE}/job_params.txt")
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
                     sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
                     findText(textFinders: [
-                        textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
+                      textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
                     ])
 		    if ( isJanusJob() ) {
                       archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: true, onlyIfSuccessful: true
