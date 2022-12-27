@@ -77,10 +77,11 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
         playbook: playbook,
         collections: collections,
         products_paths: productPaths,
-        pipelineFile: 'pipelines/ansible-downstream-runner-pipeline',
+        pipelineFile: 'pipelines/ansible-ci-pipeline',
         podmanImage: 'localhost/molecule-runner',
         pathToScript: 'ansible-validate-downstream-collection.sh',
-        jobPrefix: 'ansible-downstream-runner-'
+        jobPrefix: 'ansible-downstream-runner-',
+        checkoutProject: "False"
     ).build(this)
 }
 //
