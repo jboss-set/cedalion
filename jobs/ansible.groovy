@@ -88,7 +88,8 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
 // CI Jobs for Ansible Middleware
 //
 int upstreamProjectsPortOffsetstart = 22000
-[ 'jws', 'wildfly', 'infinispan', 'jbcs'].each { project -> upstreamCIJob(project, upstreamProjectsPortOffsetstart++) }
+[ 'jws', 'wildfly', 'infinispan'].each { project -> upstreamCIJob(project, upstreamProjectsPortOffsetstart++) }
+// upstreamCIJob('jbcs',upstreamProjectsPortOffsetstart++)
 upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexml")
 upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
 //new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
