@@ -84,7 +84,7 @@ pipeline {
                 script {
                    if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
                      dir('workdir') {
-                       echo "Workdir is check out of project: ${env.GIT_REPOSITORY_URL}:"
+                       echo "Workdir is check out of project: ${env.GIT_REPOSITORY_URL}"
                        git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
                      }
                    }
