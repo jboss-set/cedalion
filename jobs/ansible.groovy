@@ -19,7 +19,7 @@ def zeusJob(projectName, moleculeBuildId, gitUrl, branch, scenarioName = "--all"
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
-        gitUrl: gitUrl
+        gitUrl: gitUrl,
         branch: branch,
         jobPrefix: "ansible-ci-",
         pathToScript: 'molecule.sh',
