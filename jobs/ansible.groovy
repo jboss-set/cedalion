@@ -9,7 +9,6 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-ci-",
-        pipelineFile: "pipelines/ansible-ci-pipeline",
         pathToScript: 'molecule.sh',
         podmanImage: 'localhost/molecule-runner',
     ).build(this)
@@ -22,7 +21,6 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-downstream-ci-",
-        pipelineFile: "pipelines/ansible-ci-pipeline",
         podmanImage: 'localhost/molecule-runner',
         pathToScript: "molecule-downstream.sh",
         copyFromParentJob: "True",
@@ -37,7 +35,6 @@ def janusJob(projectName, projectUpstreamName = projectName, playbook = "playboo
         playbook: playbook,
         gitUrl: buildGitUrl(projectUpstreamName),
         jobPrefix: 'ansible-janus-',
-        pipelineFile: 'pipelines/ansible-ci-pipeline',
         pathToScript: 'ansible-playbook.sh',
         podmanImage: 'localhost/ansible',
         checkoutProject: "False"
@@ -52,7 +49,6 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      moleculeBuildId: portOffset,
      checkoutProject: "False",
      gitUrl: buildGitUrl(projectName),
-     pipelineFile: 'pipelines/ansible-ci-pipeline',
      copyFromParentJob: "True",
      pathToScript: "molecule-downstream.sh",
      podmanImage: 'localhost/molecule-runner'
@@ -64,7 +60,6 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
       projectName: projectName,
       moleculeBuildId: portOffset,
       jobPrefix: jobPrefix,
-      pipelineFile: "pipelines/ansible-ci-pipeline",
       pathToScript: "molecule.sh",
       gitUrl: buildGitUrl(projectName),
       podmanImage: 'localhost/molecule-runner'
@@ -77,7 +72,6 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
         playbook: playbook,
         collections: collections,
         products_paths: productPaths,
-        pipelineFile: 'pipelines/ansible-ci-pipeline',
         podmanImage: 'localhost/molecule-runner',
         pathToScript: 'ansible-validate-downstream-collection.sh',
         jobPrefix: 'ansible-downstream-runner-',
