@@ -12,7 +12,7 @@ class AbstractAnsibleBuilder {
     String harmoniaBranch = 'olympus'
     String jobPrefix = ''
     String jobSuffix = ''
-    String pipelineFile
+    String pipelineFile = 'pipelines/ansible-pipeline'
     String podmanImage
     String pathToScript
     String downloadServerUrl
