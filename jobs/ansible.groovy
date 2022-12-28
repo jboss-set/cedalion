@@ -95,7 +95,7 @@ EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 int downstreamProjectsPortOffsetstart = 23000
 ['jws', 'eap', 'data_grid','sso'].each { project -> downstreamCIJob(project, downstreamProjectsPortOffsetstart++) }
 downstreamCIJob('sso', downstreamProjectsPortOffsetstart++, "default,overridexml")
-downstreamCIJob('amq_broker', downstreamProjectsPortOffsetstart++, "default,amq_upgrade", 'amq')
+downstreamCIJob('amq_broker', downstreamProjectsPortOffsetstart++, "default,amq_upgrade")
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 
 //
