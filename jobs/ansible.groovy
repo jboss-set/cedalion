@@ -43,13 +43,14 @@ def janusJob(projectName, projectUpstreamName = projectName, playbook = "playboo
 }
 
 def dotJob(projectName, dotJobsPrefix, portOffset) {
+   String dotProjectName = projectName + "-dot"
    new ansible.MoleculeBuilder(
-     projectName: projectName + "-dot",
+     projectName: dotProjectName,
      projectUpstreamName: projectName,
      jobPrefix: dotJobsPrefix,
      moleculeBuildId: portOffset,
      checkoutProject: "False",
-     gitUrl: buildGitUrl(projectName),
+     gitUrl: "git@gitlab:ansible-middleware/" + dotProjectName,
      copyFromParentJob: "True",
      pathToScript: "molecule-downstream.sh",
      podmanImage: 'localhost/molecule-runner'
