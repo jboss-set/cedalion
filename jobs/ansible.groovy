@@ -14,6 +14,19 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
     ).build(this)
 }
 
+def zeusJob(projectName, moleculeBuildId, gitUrl, branch, scenarioName = "--all") {
+  new ansible.MoleculeBuilder(
+        projectName: projectName,
+        moleculeBuildId: moleculeBuildId,
+        scenarioName: scenarioName,
+        gitUrl: gitUrl
+        branch: branch,
+        jobPrefix: "ansible-ci-",
+        pathToScript: 'molecule.sh',
+        podmanImage: 'localhost/molecule-runner',
+    ).build(this)
+
+
 def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projectUpstreamName = projectName) {
   new ansible.MoleculeBuilder(
         projectName: projectName,
@@ -88,7 +101,7 @@ int upstreamProjectsPortOffsetstart = 22000
 // upstreamCIJob('jbcs',upstreamProjectsPortOffsetstart++)
 upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexml")
 upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
-//new ansibleCi.Builder(projectName:'zeus', moleculeBuildId: 29001, gitUrl: "https://github.com/jboss-set/", branch: 'olympus').build(this)
+zeusJob('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'olympus')
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 //
 // CI jobs for downstream (Janus generated) collections
