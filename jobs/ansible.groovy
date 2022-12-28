@@ -42,12 +42,27 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projec
     ).build(this)
 }
 
-def janusJob(projectName, projectUpstreamName = projectName, playbook = "playbooks/job.yml") {
+def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUrl(projectName), playbook = "playbooks/job.yml") {
   new ansible.JanusBuilder(
         projectName: projectName,
         projectUpstreamName: projectUpstreamName,
         playbook: playbook,
-        gitUrl: buildGitUrl(projectUpstreamName),
+        gitUrl: gitUrl,
+        jobPrefix: 'ansible-janus-',
+        pathToScript: 'ansible-playbook.sh',
+        podmanImage: 'localhost/ansible',
+        checkoutProject: "False"
+    ).build(this)
+}
+
+
+def janusAmqJob() {
+  new ansible.JanusBuilder(
+        projectName: 'amq_broker',
+        projectUpstreamName: 'activemq',
+        upstreamCollectionName: 'amq',
+        playbook: "playbooks/job.yml",
+        gitUrl: 'https://github.com/ansible-middleware/amq',
         jobPrefix: 'ansible-janus-',
         pathToScript: 'ansible-playbook.sh',
         podmanImage: 'localhost/ansible',
@@ -135,7 +150,7 @@ janusJob('jws')
 janusJob('eap', 'wildfly')
 janusJob('data_grid', 'infinispan')
 janusJob('sso', 'keycloak')
-janusJob('amq_broker', 'amq')
+janusAmqJob()
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
 // Job testing the default playbook of the downstream (Janus generated) collection
