@@ -70,15 +70,15 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git branch: 'master', url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
+                  git url: 'https://github.com/jboss-set/hera.git', branch: 'master', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
-                  git branch: "${env.HARMONIA_BRANCH}", url: "${env.HARMONIA_REPO}", poll: false, changelog: false
+                  git url: "${env.HARMONIA_REPO}", branch: "${env.HARMONIA_BRANCH}", poll: false, changelog: false
                 }
 
                 dir('eris') {
-                  git url: 'git@github.com:jboss-set/eris.git', branch: 'main'
+                  git url: 'git@github.com:jboss-set/eris.git', branch: 'main', poll: false, changelog: false
                 }
 
                 script {
@@ -108,7 +108,7 @@ pipeline {
                     findText(textFinders: [
                       textFinder(regexp: /MOLECULE_EXIT_CODE/, alsoCheckConsoleOutput: true, buildResult: 'UNSTABLE', changeCondition: 'MATCH_FOUND'),
                     ])
-		    if ( isJanusJob() ) {
+		            if ( isJanusJob() ) {
                       archiveArtifacts artifacts: 'workdir/downstream/**/*', fingerprint: true, followSymlinks: true, onlyIfSuccessful: true
                     }
                }
