@@ -50,7 +50,7 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      jobPrefix: dotJobsPrefix,
      moleculeBuildId: portOffset,
      checkoutProject: "True",
-     gitUrl: "git@gitlab:ansible-middleware/" + dotProjectName,
+     gitUrl: "git@gitlab:ansible-middleware/" + dotProjectName + ".git",
      copyFromParentJob: "True",
      pathToScript: "molecule-downstream.sh",
      podmanImage: 'localhost/molecule-runner'
