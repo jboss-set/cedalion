@@ -13,7 +13,7 @@ class MoleculeBuilder extends AbstractAnsibleBuilder {
           description("name(s) [comma separated] of the molecule scenario(s) to run, default: --all")
         }
         stringParam {
-          name ("BUILD_MOLECULE_SLAVE_SSHD_PORT")
+          name("BUILD_MOLECULE_SLAVE_SSHD_PORT")
           defaultValue(moleculeBuildId)
           description("Unique id attached to the job, used as port number to connect to molecule slave instance")
         }
