@@ -49,7 +49,7 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      projectUpstreamName: projectName,
      jobPrefix: dotJobsPrefix,
      moleculeBuildId: portOffset,
-     checkoutProject: "False",
+     checkoutProject: "True",
      gitUrl: "git@gitlab:ansible-middleware/" + dotProjectName,
      copyFromParentJob: "True",
      pathToScript: "molecule-downstream.sh",
