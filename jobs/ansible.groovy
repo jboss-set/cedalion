@@ -25,7 +25,7 @@ def zeusJob(projectName, moleculeBuildId, gitUrl, branch, scenarioName = "--all"
         pathToScript: 'molecule.sh',
         podmanImage: 'localhost/molecule-runner',
     ).build(this)
-
+}
 
 def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projectUpstreamName = projectName) {
   new ansible.MoleculeBuilder(
