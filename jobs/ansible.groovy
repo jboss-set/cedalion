@@ -14,9 +14,10 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
     ).build(this)
 }
 
-def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
+def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projectUpstreamName = projectName) {
   new ansible.MoleculeBuilder(
         projectName: projectName,
+        projectUpstreamName: projectUpstreamName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
@@ -94,7 +95,7 @@ EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 int downstreamProjectsPortOffsetstart = 23000
 ['jws', 'eap', 'data_grid','sso'].each { project -> downstreamCIJob(project, downstreamProjectsPortOffsetstart++) }
 downstreamCIJob('sso', downstreamProjectsPortOffsetstart++, "default,overridexml")
-downstreamCIJob('amq', downstreamProjectsPortOffsetstart++, "default,amq_upgrade")
+downstreamCIJob('amq_broker', downstreamProjectsPortOffsetstart++, "default,amq_upgrade", 'amq')
 EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 
 //
