@@ -124,8 +124,7 @@ EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 // CI Jobs for demos
 //
 int demoPortOffsetstart = 25000
-// To fix : ['eap-migration-demo', 'jws-app-update-demo']
-[ 'wildfly-cluster-demo', 'flange-demo'].each {  projectName -> demoJob(projectName, demoPortOffsetstart++) }
+[ 'wildfly-cluster-demo', 'flange-demo', 'eap-migration-demo', 'jws-app-update-demo'].each {  projectName -> demoJob(projectName, demoPortOffsetstart++) }
 EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 
 //
