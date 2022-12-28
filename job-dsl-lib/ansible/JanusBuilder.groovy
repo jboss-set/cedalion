@@ -3,6 +3,7 @@ package ansible
 class JanusBuilder extends AbstractAnsibleBuilder {
 
   String playbook = 'playbooks/job.yml'
+  String upstreamCollectionName = ""
 
   def build(factory) {
     super.build(factory).parameters {
@@ -17,6 +18,10 @@ class JanusBuilder extends AbstractAnsibleBuilder {
       stringParam {
         name ("JANUS_BRANCH")
         defaultValue("main")
+      }
+      stringParam {
+        name("UPSTREAM_COLLECTION_NAME")
+        defaultValue(upstreamCollectionName)
       }
     }
   }
