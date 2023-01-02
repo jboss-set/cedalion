@@ -145,11 +145,11 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 //
 // Janus jobs - generating downstream collections
 //
-janusJob('redhat_csp_download','redhat-csp-download')
+janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'))
 janusJob('jws')
-janusJob('eap', 'wildfly')
-janusJob('data_grid', 'infinispan')
-janusJob('sso', 'keycloak')
+janusJob('eap', 'wildfly', buildGitUrl('wildfly'))
+janusJob('data_grid', 'infinispan', buildGitUrl('infinispan'))
+janusJob('sso', 'keycloak', buildGitUrl('keycloak'))
 janusAmqJob()
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
