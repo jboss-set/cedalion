@@ -1,0 +1,51 @@
+def tagBuild(String jobname, String releaseName) {
+    def jobRunResults = build job: "${jobname}"
+    def job = Jenkins.instance.getItem("${jobname}")
+    def build = job.getBuild(jobRunResults.id)
+    echo "${jobname} - set release build to keep log forever"
+    build.keepLog(true)
+    echo "${jobname} - set release name to ${releaseName}"
+    build.setDisplayName(releaseName)
+}
+
+node {
+
+   def collectionName = "${env.COLLECTION_NAME}"
+   def upstreamCollectionName = "${env.PROJECT_UPSTREAM_NAME}"
+   def releaseName = "${env.RELEASE_NAME}"
+   def buildUrls = []
+
+   stage("Run upstream CI for collection ${collectionName}") {
+       tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}")
+   }
+   stage('Run Janus to generate downstream collection') {
+       tagBuild("ansible-janus-${collectionName}", "${releaseName}")
+   }
+   stage('run-parallel-branches') {
+       stage("Parallel") {
+           parallel (
+               "Run downstream CI for collection ${collectionName}" : {
+                   tagBuild("ansible-downstream-ci-${collectionName}", "${releaseName}")
+               },
+               "Run downstream-only tests (dot) for collection ${collectionName}" : {
+                   tagBuild("ansible-downstream-tests-${collectionName}-dot", "${releaseName}")
+               },
+               "Run downstream runner for collection ${collectionName}" : {
+                   tagBuild("ansible-downstream-runner-${collectionName}", "${releaseName}")
+               }
+           )
+       }
+   }
+   stage("Report") {
+            echo "${buildUrls}"
+            //env.PATH_TO_REPORT = "${env.WORKSPACE/release_report.html}"
+            env.BUILD_CI = "${buildUrls[0]}"
+            env.BUILD_JANUS = "${buildUrls[1]}"
+            env.BUILD_DOWNSTREAM_CI = "${buildUrls[2]}"
+            env.BUILD_DOT = "${buildUrls[3]}"
+            env.BUILD_RUNNER = "${buildUrls[4]}"
+            sh(script:"/var/jenkins_home/build-report-ansible-release-report.sh", returnStdout: true)
+            archiveArtifacts artifacts: 'report.html', followSymlinks: false
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+       }
+}

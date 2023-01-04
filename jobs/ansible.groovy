@@ -108,6 +108,18 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
         checkoutProject: "False"
     ).build(this)
 }
+
+def releaseCollection(projectName, projectUpstreamName = projectName) {
+  new ansible.AnsibleReleaseBuilder(
+        projectName: projectName,
+        projectUpstreamName: projectUpstreamName
+  ).build(this)
+}
+releaseCollection("eap","wildfly")
+releaseCollection("jws","jws")
+releaseCollection("data_grid", "infinispan")
+releaseCollection("sso","keycloak")
+EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 //
 // CI Jobs for Ansible Middleware
 //
