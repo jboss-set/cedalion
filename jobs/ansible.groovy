@@ -14,7 +14,7 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
     ).build(this)
 }
 
-def zeusJob(projectName, moleculeBuildId, gitUrl, branch, scenarioName = "--all") {
+def moleculeJobWithGitUrl(projectName, moleculeBuildId, gitUrl, branch = "main", scenarioName = "--all") {
   new ansible.MoleculeBuilder(
         projectName: projectName,
         moleculeBuildId: moleculeBuildId,
@@ -116,7 +116,8 @@ int upstreamProjectsPortOffsetstart = 22000
 // upstreamCIJob('jbcs',upstreamProjectsPortOffsetstart++)
 upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexml")
 upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
-zeusJob('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'olympus')
+moleculeJobWithGitUrl('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'olympus')
+moleculeJobWithGitUrl('common-criteria', upstreamProjectsPortOffsetstart++, 'https://github.com/ansible-middleware/common_criteria.git')
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 //
 // CI jobs for downstream (Janus generated) collections
