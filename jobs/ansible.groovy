@@ -42,7 +42,12 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projec
     ).build(this)
 }
 
-def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUrl(projectName), playbook = "playbooks/job.yml") {
+def janusDefaultPlaybook(projectName) {
+  return "playbooks/" + projectName + ".yml"
+}
+
+def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUrl(projectName), playbook = "") {
+  if ( playbook.equals("") ) playbook = janusDefaultPlaybook(projectName)
   new ansible.JanusBuilder(
         projectName: projectName,
         projectUpstreamName: projectUpstreamName,
@@ -61,7 +66,7 @@ def janusAmqJob() {
         projectName: 'amq_broker',
         projectUpstreamName: 'activemq',
         upstreamCollectionName: 'amq',
-        playbook: "playbooks/job.yml",
+        playbook: "playbooks/amq_broker.yml",
         gitUrl: 'https://github.com/ansible-middleware/amq',
         jobPrefix: 'ansible-janus-',
         pathToScript: 'ansible-playbook.sh',
@@ -158,8 +163,8 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 //
 // Janus jobs - generating downstream collections
 //
-janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'))
-janusJob('jws')
+janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'), "playbooks/job.yml")
+janusJob('jws','jws', buildGitUrl('jws'), "playbooks/job.yml")
 janusJob('eap', 'wildfly', buildGitUrl('wildfly'))
 janusJob('data_grid', 'infinispan', buildGitUrl('infinispan'))
 janusJob('sso', 'keycloak', buildGitUrl('keycloak'))
