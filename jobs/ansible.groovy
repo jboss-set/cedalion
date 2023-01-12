@@ -54,7 +54,7 @@ def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUr
         playbook: playbook,
         gitUrl: gitUrl,
         jobPrefix: 'ansible-janus-',
-        pathToScript: 'ansible-playbook.sh',
+        pathToScript: 'ansible-janus.sh',
         podmanImage: 'localhost/ansible',
         checkoutProject: "False"
     ).build(this)
@@ -163,8 +163,8 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 //
 // Janus jobs - generating downstream collections
 //
-janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'), "playbooks/job.yml")
-janusJob('jws','jws', buildGitUrl('jws'), "playbooks/job.yml")
+janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'), "playbooks/janus.yml")
+janusJob('jws','jws', buildGitUrl('jws'), "playbooks/janus.yml")
 janusJob('eap', 'wildfly', buildGitUrl('wildfly'))
 janusJob('data_grid', 'infinispan', buildGitUrl('infinispan'))
 janusJob('sso', 'keycloak', buildGitUrl('keycloak'))
