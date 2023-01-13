@@ -69,7 +69,7 @@ def janusAmqJob() {
         playbook: "playbooks/amq_broker.yml",
         gitUrl: 'https://github.com/ansible-middleware/amq',
         jobPrefix: 'ansible-janus-',
-        pathToScript: 'ansible-playbook.sh',
+        pathToScript: 'ansible-janus.sh',
         podmanImage: 'localhost/ansible',
         checkoutProject: "False"
     ).build(this)
