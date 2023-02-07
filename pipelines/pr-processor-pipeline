@@ -28,7 +28,7 @@ pipeline {
                     }
 
                     dir('harmonia') {
-                        git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                        git branch: 'main', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
                     }
 
                     sh label: '', script: "mkdir -p ${env.WORKSPACE}/workdir"

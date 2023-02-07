@@ -33,7 +33,7 @@ pipeline {
                   git url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
                 }
                 dir('harmonia') {
-                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                  git branch: 'main', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
                 }
                 dir('configs') {
                   git url: "${env.INTERNAL_GIT_REPOSITORY_URL}/jboss-set/dependency-alignment-configs.git",
