@@ -124,6 +124,7 @@ releaseCollection("eap","wildfly")
 releaseCollection("jws","jws")
 releaseCollection("data_grid", "infinispan")
 releaseCollection("sso","keycloak")
+releaseCollection("amq_broker","amq")
 EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 //
 // CI Jobs for Ansible Middleware
