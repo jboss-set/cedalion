@@ -170,6 +170,7 @@ janusJob('eap', 'wildfly', buildGitUrl('wildfly'))
 janusJob('data_grid', 'infinispan', buildGitUrl('infinispan'))
 janusJob('sso', 'keycloak', buildGitUrl('keycloak'))
 janusAmqJob()
+janusJob('openshift', 'okd', 'https://github.com/openshift/community.okd.git')
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
 // Job testing the default playbook of the downstream (Janus generated) collection
