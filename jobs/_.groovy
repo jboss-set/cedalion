@@ -16,7 +16,7 @@ new eap7.Builder(branch:'7.4.x', jobName:'eap-7.4.x-jdk17',
             }
         }).build(this)
 
-new eap7.Builder(branch:'7.4.x', jobName:'eap-7.4.x-jdk17', parentJobname:'eap-7.4.x-jdk17-build', javaHome: "/opt/oracle/jdk-17.0.1",
+new eap7.Builder(branch:'7.4.x', jobName:'eap-7.4.x-jdk17', parentJobname:'eap-7.4.x-jdk17-build', javaHome: "/opt/oracle/jdk17-latest",
         customParams: {
             stringParam {
                 name("TESTSUITE_OPTS")
@@ -45,6 +45,6 @@ EapView.jobList(this, 'eap-6.4.x', 'eap-6.4.*')
 new eap7.Builder(branch:'main',
                  jobName: 'wildfly',
                  gitRepositoryUrl: "git@github.com:wildfly/wildfly.git",
-                 javaHome: "/opt/oracle/openjdk-11.0.14.1_1"
+                 javaHome: "/opt/oracle/openjdk11-latest"
                 ).buildAndTest(this)
 EapView.jobList(this, 'wildfly', 'wildfly.*')
