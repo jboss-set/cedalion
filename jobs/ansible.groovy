@@ -55,7 +55,7 @@ def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUr
         gitUrl: gitUrl,
         jobPrefix: 'ansible-janus-',
         pathToScript: 'ansible-janus.sh',
-        podmanImage: 'localhost/ansible',
+        podmanImage: 'localhost/molecule-runner-9',
         checkoutProject: "False"
     ).build(this)
 }
