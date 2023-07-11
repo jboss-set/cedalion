@@ -3,15 +3,19 @@ package alignment
 import util.JobSharedUtils
 
 class Builder {
-    String branch
+
     String jobName
-    String jobSuffix
-    String repoUrl
-    String toAddress
-    String id
-    String reportTitle
-    String rule
-    String logger_project_code
+    String projectRepositoryUrl
+    String projectRepositoryBranch
+    String configRepositoryUrl
+    String configRepositoryBranch
+    String configFile
+    String binaryVersion
+    String loggerCode
+    String loggerUri
+    String subject
+    String fromAddr
+    String toAddr
 
     void build(factory) {
         if (jobName == null) {
@@ -19,7 +23,6 @@ class Builder {
         }
         factory.with {
             pipelineJob(jobName) {
-
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/component-alignment-pipeline'))
@@ -34,36 +37,53 @@ class Builder {
                     cron('@weekly')
                 }
                 parameters {
-                    JobSharedUtils.mavenParameters(params: delegate)
-                    JobSharedUtils.gitParameters(delegate, repoUrl, branch)
                     stringParam {
-                        name("TO_ADDRESS")
-                        defaultValue(toAddress)
+                        name ("PROJECT_REPOSITORY_URL")
+                        defaultValue(projectRepositoryUrl)
                     }
                     stringParam {
-                        name("HARMONIA_SCRIPT")
-                        defaultValue('upgrade-components-report.sh')
+                        name ("PROJECT_REPOSITORY_BRANCH")
+                        defaultValue(projectRepositoryBranch)
                     }
                     stringParam {
-                        name("JOB_NAME")
-                        defaultValue(id)
+                        name ("CONFIG_REPOSITORY_URL")
+                        defaultValue(configRepositoryUrl)
                     }
                     stringParam {
-                        name("RULE_NAME")
-                        defaultValue(rule)
+                        name ("CONFIG_REPOSITORY_BRANCH")
+                        defaultValue(configRepositoryBranch)
                     }
                     stringParam {
-                        name("REPORT_TITLE")
-                        defaultValue(reportTitle)
+                        name ("CONFIG_FILE")
+                        defaultValue(configFile)
                     }
                     stringParam {
-                        name("LOGGER_PROJECT_CODE")
-                        defaultValue(logger_project_code)
+                        name ("BINARY_VERSION")
+                        defaultValue(binaryVersion)
                     }
                     stringParam {
-                        name("COMPONENT_UPGRADE_LOGGER")
-                        defaultValue(COMP_ALIGMENT_UPGRADE_LOGGER)
+                        name ("LOGGER_CODE")
+                        defaultValue(loggerCode)
                     }
+                    stringParam {
+                        name ("LOGGER_URI")
+                        defaultValue(loggerUri)
+                    }
+                    stringParam {
+                        name ("SUBJECT")
+                        defaultValue(subject)
+                    }
+                    stringParam {
+                        name ("FROM_ADDR")
+                        defaultValue(fromAddr)
+                    }
+                    stringParam {
+                        name ("TO_ADDR")
+                        defaultValue(toAddr)
+                    }
+                }
+                publishers {
+                    archiveArtifacts('report.html')
                 }
             }
         }
