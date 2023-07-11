@@ -1,76 +1,52 @@
-def dumpParams(String outputFile) {
-  echo "Dumping all parameters to " + outputFile
-  def lines = ""
-  params.each() { param, value ->
-    lines = lines + "${param}=\"${value}\"\n"
-  }
-  writeFile file: outputFile, text: lines
-}
-
 pipeline {
     agent any
 
-    options {
-      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-    }
-
     stages {
-        stage('Prep') {
+        stage('Checkout') {
             steps {
-                //cleanWs()
-                script {
-                    // warning, GIT_BRANCH var already points to pipeline's branch
-                    if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
-                      env.GIT_REPOSITORY_BRANCH = "master"
-                    }
-                    echo "GIT_REPOSITORY_BRANCH:[${env.GIT_REPOSITORY_BRANCH}]"
-                }
+                // checkout project repo
                 dir('workdir') {
-                  git url: "${env.GIT_REPOSITORY_URL}",
-                      branch: "${env.GIT_REPOSITORY_BRANCH}"
+                    git url: "${env.PROJECT_REPOSITORY_URL}",
+                            branch: "${env.PROJECT_REPOSITORY_BRANCH}"
                 }
-                dir('hera') {
-                  git url: 'https://github.com/jboss-set/hera.git', poll: false, changelog: false
-                }
-                dir('harmonia') {
-                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
-                }
+                // checkout configuration repo
                 dir('configs') {
-                  git url: "${env.INTERNAL_GIT_REPOSITORY_URL}/jboss-set/dependency-alignment-configs.git",
-                      branch: 'master',
-                      poll: false,
-                      changelog: false
+                    git url: "${env.CONFIG_REPOSITORY_URL}",
+                            branch: "${env.CONFIG_REPOSITORY_BRANCH}"
                 }
-
+                // download dependency updater binary
                 script {
-                    env.BUILD_SCRIPT = "${env.WORKSPACE}/hera/build-wrapper.sh"
-                    dumpParams("${env.WORKSPACE}/job_params.txt")
+                    def binaryVersion = env.BINARY_VERSION ?: '1.0.1'
+                    def binaryUrl = "https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/jboss/set/dependency-alignment/cli/${binaryVersion}/cli-${binaryVersion}.jar"
+                    def binaryPath = "alignment-cli-${binaryVersion}.jar"
+                    def binaryFile = new File(env.WORKSPACE, binaryPath)
+                    println('Checking existence of ' + binaryFile.getAbsolutePath())
+                    if (!binaryFile.exists()) {
+                        println("Downloading ${binaryPath}")
+                        binaryFile.createNewFile()
+                        binaryFile.newDataOutputStream().write(new URL(binaryUrl).getBytes())
+                        //binaryFile << new URL(binaryUrl).getBytes()
+                    }
+                    env.BINARY_PATH = binaryPath
                 }
-                // Start container
-                sh label: '', script: "${env.WORKSPACE}/hera/hera.sh run"
             }
         }
-        stage ('Build') {
+        stage ('Run Report') {
             steps {
-                sh label: '', script: "${env.WORKSPACE}/hera/hera.sh job ${env.WORKSPACE}/job_params.txt"
+                // run the CLI tool
+                sh script: """
+                    java -Dlogger.projectCode='${env.LOGGER_CODE}' \\
+                         -Dlogger.uri='${env.LOGGER_URI}' \\
+                         -jar '${env.BINARY_PATH}' send-html-report \\
+                         -c 'configs/${env.CONFIG_FILE}' \\
+                         -f 'workdir/pom.xml' \\
+                         --email-smtp-host 'smtp.corp.redhat.com' \\
+                         --email-smtp-port '587' \\
+                         --email-subject '${env.SUBJECT}' \\
+                         --email-from '${env.FROM_ADDR}' \\
+                         --email-to '${env.TO_ADDR}'
+                    """
             }
-        }
-    }
-    post {
-        always {
-            script {
-             try {
-                  sh label: '', script: "${env.WORKSPACE}/hera/hera.sh stop"
-              } catch (err) {
-                  echo "Error while deleting container: ${err}"
-              }
-            }
-            archiveArtifacts artifacts: 'workdir/report.html', fingerprint: false, allowEmptyArchive: true
-        }
-        failure {
-            mail to: 'jboss-set-ops@redhat.com,thofman@redhat.com', from: 'rpelisse@redhat.com',
-                subject: "Build: ${env.JOB_NAME} - Failed",
-                body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}\n\nBlue Ocean:\n${env.RUN_DISPLAY_URL}"
         }
     }
 }

@@ -1,13 +1,119 @@
 import alignment.Builder
 
-new alignment.Builder(id: 'component-alignment-eap-74', rule: 'eap-74', reportTitle: 'JBoss_EAP_7.4.x', logger_project_code: 'olympus-eap-7.4.x', jobSuffix: 'eap-74', repoUrl: 'git@github.com:jbossas/jboss-eap7.git', branch: '7.4.x', toAddress: EAP_COMP_ALIGMENT_TO_ADDRESS).build(this)
+def defaultBinaryVersion = '1.0.1'
+def defaultFromAddr = 'thofman@redhat.com'
+def defaultLoggerUri = 'https://component-upgrade-logger-jboss-set-psi.apps.ocp4.prod.psi.redhat.com/api'
 
-new alignment.Builder(id: 'component-alignment-elytron-web', rule: 'elytron-1x', reportTitle: 'Elytron_Web', logger_project_code: 'olympus-elytron-web-master', jobSuffix: 'elytron-web', repoUrl: 'git@github.com:wildfly-security/elytron-web.git', branch: 'master', toAddress: WFLY_COMP_ALIGMENT_TO_ADDRESS).build(this)
-new alignment.Builder(id: 'component-alignment-wildfly-elytron', rule: 'elytron-1x', reportTitle: 'Wildfly_Elytron', logger_project_code: 'olympus-elytron-1.x', jobSuffix: 'wildfly-elytron', repoUrl: 'git@github.com:wildfly-security/wildfly-elytron.git', branch: '1.x', toAddress: WFLY_COMP_ALIGMENT_TO_ADDRESS).build(this)
+new Builder(jobName: 'wildfly-main',
+        projectRepositoryUrl: 'https://github.com/wildfly/wildfly.git',
+        projectRepositoryBranch: 'main',
+        configRepositoryUrl: 'https://github.com/jboss-set/alignment-report-configs.git',
+        configRepositoryBranch: 'main',
+        configFile: 'rules-wildfly-main.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'wildfly-main',
+        subject: 'Possible component upgrades report - wildfly:main',
+        fromAddr: defaultFromAddr,
+        toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
+).build(this)
 
-new alignment.Builder(id: 'component-alignment-wildfly-core-74', rule: 'eap-74', reportTitle: 'Wildfly_Core_15.0.x_EAP_7.4', logger_project_code: 'olympus-wildfly-core-eap-7.4.x', jobSuffix: 'wildfly-core-74', repoUrl: 'git@github.com:jbossas/wildfly-core-eap.git', branch: '15.0.x', toAddress: EAP_COMP_ALIGMENT_TO_ADDRESS).build(this)
+new Builder(jobName: 'wildfly-core-main',
+        projectRepositoryUrl: 'https://github.com/wildfly/wildfly-core.git',
+        projectRepositoryBranch: 'main',
+        configRepositoryUrl: 'https://github.com/jboss-set/alignment-report-configs.git',
+        configRepositoryBranch: 'main',
+        configFile: 'rules-wildfly-main.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'wildfly-core-main',
+        subject: 'Possible component upgrades report - wildfly-core:main',
+        fromAddr: defaultFromAddr,
+        toAddr: 'thofman@redhat.com'
+).build(this)
 
-new alignment.Builder(id: 'component-alignment-Wildfly', rule: 'wildfly-master', reportTitle: 'Wildfly', logger_project_code: 'olympus-wildfly-master', jobSuffix: 'wildfly', repoUrl: 'git@github.com:wildfly/wildfly.git', branch: 'main', toAddress: WFLY_COMP_ALIGMENT_TO_ADDRESS).build(this)
-new alignment.Builder(id: 'component-alignment-wildfly-core', rule: 'wildfly-master', reportTitle: 'Wildfly_Core', logger_project_code: 'olympus-wildfly-core-master', jobSuffix: 'wildfly-core', repoUrl: 'git@github.com:wildfly/wildfly-core.git', branch: 'main', toAddress: WFLY_COMP_ALIGMENT_TO_ADDRESS).build(this)
+new Builder(jobName: 'elytron-1.x',
+        projectRepositoryUrl: 'https://github.com/wildfly-security/wildfly-elytron.git',
+        projectRepositoryBranch: '1.x',
+        configRepositoryUrl: 'https://github.com/jboss-set/alignment-report-configs.git',
+        configRepositoryBranch: 'main',
+        configFile: 'rules-elytron-1.x.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'elytron-1.x',
+        subject: 'Possible component upgrades report - wildfly-elytron:1.x',
+        fromAddr: defaultFromAddr,
+        toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
+).build(this)
+
+new Builder(jobName: 'elytron-web-master',
+        projectRepositoryUrl: 'https://github.com/wildfly-security/elytron-web.git',
+        projectRepositoryBranch: 'master',
+        configRepositoryUrl: 'https://github.com/jboss-set/alignment-report-configs.git',
+        configRepositoryBranch: 'main',
+        configFile: 'rules-elytron-1.x.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'elytron-web-master',
+        subject: 'Possible component upgrades report - elytron-web:master',
+        fromAddr: defaultFromAddr,
+        toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
+).build(this)
+
+new Builder(jobName: 'jboss-eap-7.4.x',
+        projectRepositoryUrl: 'git@github.com:jbossas/jboss-eap7.git',
+        projectRepositoryBranch: '7.4.x',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryBranch: 'master',
+        configFile: 'rules-eap-74.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'eap-7.4.x',
+        subject: 'Possible component upgrades report - jboss-eap7:7.4.x',
+        fromAddr: defaultFromAddr,
+        toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
+).build(this)
+
+new Builder(jobName: 'wildfly-core-eap-15.0.x',
+        projectRepositoryUrl: 'git@github.com:jbossas/wildfly-core-eap.git',
+        projectRepositoryBranch: '15.0.x',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryBranch: 'master',
+        configFile: 'rules-eap-74.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'wildfly-core-eap-15.0.x',
+        subject: 'Possible component upgrades report - wildfly-core-eap:15.0.x (EAP 7.4)',
+        fromAddr: defaultFromAddr,
+        toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
+).build(this)
+
+new Builder(jobName: 'jboss-eap-8.0.x',
+        projectRepositoryUrl: 'git@github.com:jbossas/jboss-eap8.git',
+        projectRepositoryBranch: '8.0.x',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryBranch: 'master',
+        configFile: 'rules-eap-80.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'eap-8.0.x',
+        subject: 'Possible component upgrades report - jboss-eap8:8.0.x',
+        fromAddr: defaultFromAddr,
+        toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
+).build(this)
+
+new Builder(jobName: 'wildfly-core-eap-21.0.x',
+        projectRepositoryUrl: 'git@github.com:jbossas/wildfly-core-eap.git',
+        projectRepositoryBranch: '21.0.x',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryBranch: 'master',
+        configFile: 'rules-eap-80.json',
+        binaryVersion: defaultBinaryVersion,
+        loggerUri: defaultLoggerUri,
+        loggerCode: 'wildfly-core-eap-21.0.x',
+        subject: 'Possible component upgrades report - wildfly-core-eap:21.0.x (EAP 8.0)',
+        fromAddr: defaultFromAddr,
+        toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
+).build(this)
 
 EapView.jobList(this, 'Component Alignment', 'component-alignment.*')
