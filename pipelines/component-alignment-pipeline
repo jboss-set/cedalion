@@ -15,20 +15,13 @@ pipeline {
                             branch: "${env.CONFIG_REPOSITORY_BRANCH}"
                 }
                 // download dependency updater binary
-                script {
-                    def binaryVersion = env.BINARY_VERSION ?: '1.0.1'
-                    def binaryUrl = "https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/jboss/set/dependency-alignment/cli/${binaryVersion}/cli-${binaryVersion}.jar"
-                    def binaryPath = "alignment-cli-${binaryVersion}.jar"
-                    def binaryFile = new File(env.WORKSPACE, binaryPath)
-                    println('Checking existence of ' + binaryFile.getAbsolutePath())
-                    if (!binaryFile.exists()) {
-                        println("Downloading ${binaryPath}")
-                        binaryFile.createNewFile()
-                        binaryFile.newDataOutputStream().write(new URL(binaryUrl).getBytes())
-                        //binaryFile << new URL(binaryUrl).getBytes()
-                    }
-                    env.BINARY_PATH = binaryPath
-                }
+                sh """
+                    readonly CLI_URL='https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/jboss/set/dependency-alignment/cli/${env.BINARY_VERSION}/cli-${env.BINARY_VERSION}.jar'
+                    readonly CLI_PATH='alignment-cli-${env.BINARY_VERSION}.jar'
+                    if [ ! -f "\${CLI_PATH}" ]; then
+                        curl "\${CLI_URL}" -o "\${CLI_PATH}"
+                    fi
+                    """
             }
         }
         stage ('Run Report') {
@@ -37,7 +30,7 @@ pipeline {
                 sh script: """
                     java -Dlogger.projectCode='${env.LOGGER_CODE}' \\
                          -Dlogger.uri='${env.LOGGER_URI}' \\
-                         -jar '${env.BINARY_PATH}' send-html-report \\
+                         -jar 'alignment-cli-${env.BINARY_VERSION}.jar' send-html-report \\
                          -c 'configs/${env.CONFIG_FILE}' \\
                          -f 'workdir/pom.xml' \\
                          --email-smtp-host 'smtp.corp.redhat.com' \\
@@ -47,6 +40,11 @@ pipeline {
                          --email-to '${env.TO_ADDR}'
                     """
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts('report.html')
         }
     }
 }
