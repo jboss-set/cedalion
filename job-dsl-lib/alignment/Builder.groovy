@@ -82,9 +82,6 @@ class Builder {
                         defaultValue(toAddr)
                     }
                 }
-                publishers {
-                    archiveArtifacts('report.html')
-                }
             }
         }
     }
