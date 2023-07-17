@@ -1,6 +1,6 @@
 import alignment.Builder
 
-def defaultBinaryVersion = '1.0.1'
+def defaultBinaryVersion = '1.0.3'
 def defaultFromAddr = 'thofman@redhat.com'
 def defaultLoggerUri = 'https://component-upgrade-logger-jboss-set-psi.apps.ocp4.prod.psi.redhat.com/api'
 
