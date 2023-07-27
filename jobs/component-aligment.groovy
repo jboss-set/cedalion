@@ -29,7 +29,7 @@ new Builder(jobName: 'component-alignment-wildfly-core-main',
         loggerCode: 'wildfly-core-main',
         subject: 'Possible component upgrades report - wildfly-core:main',
         fromAddr: defaultFromAddr,
-        toAddr: 'thofman@redhat.com'
+        toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
 ).build(this)
 
 new Builder(jobName: 'component-alignment-elytron-1.x',
