@@ -70,7 +70,7 @@ def janusAmqJob() {
         gitUrl: 'https://github.com/ansible-middleware/amq',
         jobPrefix: 'ansible-janus-',
         pathToScript: 'ansible-janus.sh',
-        podmanImage: 'localhost/ansible',
+        podmanImage: 'localhost/molecule-runner-9',
         checkoutProject: "False"
     ).build(this)
 }
