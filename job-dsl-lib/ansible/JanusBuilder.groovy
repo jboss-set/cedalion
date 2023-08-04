@@ -23,6 +23,8 @@ class JanusBuilder extends AbstractAnsibleBuilder {
         name("UPSTREAM_COLLECTION_NAME")
         defaultValue(upstreamCollectionName)
       }
+    }.triggers {
+      upstream threshold: 'FAILURE', upstreamProjects: 'ansible-ci-' + (upstreamCollectionName ?: projectUpstreamName)
     }
   }
 }
