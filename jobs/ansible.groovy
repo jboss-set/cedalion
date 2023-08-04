@@ -1,5 +1,5 @@
-def buildGitUrl(projectName) {
-  return 'https://github.com/ansible-middleware/' + projectName + '.git'
+def buildGitUrl(projectName, upstreamCollectionName = "") {
+  return 'https://github.com/ansible-middleware/' + (upstreamCollectionName ?: projectName) + '.git'
 }
 
 def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
@@ -46,34 +46,21 @@ def janusDefaultPlaybook(projectName) {
   return "playbooks/" + projectName + ".yml"
 }
 
-def janusJob(projectName, projectUpstreamName = projectName, gitUrl = buildGitUrl(projectName), playbook = "") {
-  if ( playbook.equals("") ) playbook = janusDefaultPlaybook(projectName)
+def janusJob(Map args, projectName) {
   new ansible.JanusBuilder(
         projectName: projectName,
-        projectUpstreamName: projectUpstreamName,
-        playbook: playbook,
-        gitUrl: gitUrl,
+        projectUpstreamName: args.projectUpstreamName ?: projectName,
+        upstreamCollectionName: args.upstreamCollectionName ?: '',
+        playbook: args.playbook ?: janusDefaultPlaybook(projectName),
+        gitUrl: args.gitUrl ?: buildGitUrl(args.projectUpstreamName ?: projectName, args.upstreamCollectionName ?: ''),
         jobPrefix: 'ansible-janus-',
         pathToScript: 'ansible-janus.sh',
         podmanImage: 'localhost/molecule-runner-9',
-        checkoutProject: "False"
+        checkoutProject: "False",
+        setupTrigger: args.setupTrigger ?: true
     ).build(this)
 }
 
-
-def janusAmqJob() {
-  new ansible.JanusBuilder(
-        projectName: 'amq_broker',
-        projectUpstreamName: 'activemq',
-        upstreamCollectionName: 'amq',
-        playbook: "playbooks/amq_broker.yml",
-        gitUrl: 'https://github.com/ansible-middleware/amq',
-        jobPrefix: 'ansible-janus-',
-        pathToScript: 'ansible-janus.sh',
-        podmanImage: 'localhost/molecule-runner-9',
-        checkoutProject: "False"
-    ).build(this)
-}
 
 def dotJob(projectName, dotJobsPrefix, portOffset) {
    String dotProjectName = projectName + "-dot"
@@ -165,14 +152,15 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 //
 // Janus jobs - generating downstream collections
 //
-janusJob('redhat_csp_download','redhat-csp-download', buildGitUrl('redhat-csp-download'), "playbooks/janus.yml")
-janusJob('jws','jws', buildGitUrl('jws'))
-janusJob('eap', 'wildfly', buildGitUrl('wildfly'))
-janusJob('data_grid', 'infinispan', buildGitUrl('infinispan'))
-janusJob('sso', 'keycloak', buildGitUrl('keycloak'))
-janusJob('runtimes_common', 'common', buildGitUrl('common'))
-janusAmqJob()
-janusJob('openshift', 'okd', 'https://github.com/openshift/community.okd.git')
+janusJob('redhat_csp_download', projectUpstreamName: 'redhat-csp-download', playbook: "playbooks/janus.yml", setupTrigger: false)
+janusJob('jws', projectUpstreamName: 'jws')
+janusJob('eap', projectUpstreamName: 'wildfly')
+janusJob('data_grid', projectUpstreamName: 'infinispan')
+janusJob('sso', projectUpstreamName: 'keycloak')
+janusJob('runtimes_common', projectUpstreamName: 'common')
+janusJob('amq_broker', projectUpstreamName: 'activemq', upstreamCollectionName: 'amq')
+janusJob('amq_streams', projectUpstreamName: 'amq_streams')
+janusJob('openshift', projectUpstreamName: 'okd', gitUrl: 'https://github.com/openshift/community.okd.git', setupTrigger: false)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
 // Job testing the default playbook of the downstream (Janus generated) collection
