@@ -152,7 +152,6 @@ EapView.jobList(this, 'Ansible Demos', '^.*-demo')
 //
 // Janus jobs - generating downstream collections
 //
-janusJob('redhat_csp_download', projectUpstreamName: 'redhat-csp-download', playbook: "playbooks/janus.yml", setupTrigger: false)
 janusJob('jws', projectUpstreamName: 'jws')
 janusJob('eap', projectUpstreamName: 'wildfly')
 janusJob('data_grid', projectUpstreamName: 'infinispan')
