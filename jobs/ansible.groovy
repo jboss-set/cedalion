@@ -160,6 +160,7 @@ janusJob('runtimes_common', projectUpstreamName: 'common')
 janusJob('amq_broker', projectUpstreamName: 'activemq', upstreamCollectionName: 'amq')
 janusJob('amq_streams', projectUpstreamName: 'amq_streams')
 janusJob('openshift', projectUpstreamName: 'okd', gitUrl: 'https://github.com/openshift/community.okd.git', setupTrigger: false)
+janusJob('ocpv', projectUpstreamName: 'kubevirt', upstreamCollectionName: 'kubevirt.core', gitUrl: 'https://github.com/kubevirt/kubevirt.core.git', setupTrigger: false)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
 // Job testing the default playbook of the downstream (Janus generated) collection
