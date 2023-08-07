@@ -9,7 +9,7 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-ci-",
-        pathToScript: 'molecule.sh',
+        pathToScript: 'ansible/molecule/molecule.sh',
         podmanImage: 'localhost/molecule-runner',
     ).build(this)
 }
@@ -22,7 +22,7 @@ def moleculeJobWithGitUrl(projectName, moleculeBuildId, gitUrl, branch = "main",
         gitUrl: gitUrl,
         branch: branch,
         jobPrefix: "ansible-ci-",
-        pathToScript: 'molecule.sh',
+        pathToScript: 'ansible/molecule/molecule.sh',
         podmanImage: 'localhost/molecule-runner',
     ).build(this)
 }
@@ -36,7 +36,7 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projec
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-downstream-ci-",
         podmanImage: 'localhost/molecule-runner',
-        pathToScript: "molecule-downstream.sh",
+        pathToScript: 'ansible/molecule/molecule-downstream.sh',
         copyFromParentJob: "True",
         checkoutProject: "False"
     ).build(this)
@@ -54,7 +54,7 @@ def janusJob(Map args, projectName) {
         playbook: args.playbook ?: janusDefaultPlaybook(projectName),
         gitUrl: args.gitUrl ?: buildGitUrl(args.projectUpstreamName ?: projectName, args.upstreamCollectionName ?: ''),
         jobPrefix: 'ansible-janus-',
-        pathToScript: 'ansible-janus.sh',
+        pathToScript: 'ansible/janus.sh',
         podmanImage: 'localhost/molecule-runner-9',
         checkoutProject: "False",
         setupTrigger: args.setupTrigger ?: true
@@ -72,7 +72,7 @@ def dotJob(projectName, dotJobsPrefix, portOffset) {
      checkoutProject: "True",
      gitUrl: "git@gitlab:ansible-middleware/" + dotProjectName + ".git",
      copyFromParentJob: "True",
-     pathToScript: "molecule-downstream.sh",
+     pathToScript: 'ansible/molecule/molecule-downstream.sh',
      podmanImage: 'localhost/molecule-runner'
     ).build(this)
 }
@@ -82,7 +82,7 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
       projectName: projectName,
       moleculeBuildId: portOffset,
       jobPrefix: jobPrefix,
-      pathToScript: "molecule.sh",
+      pathToScript: 'ansible/molecule/molecule.sh',
       gitUrl: buildGitUrl(projectName),
       podmanImage: 'localhost/molecule-runner'
   ).build(this)
@@ -95,7 +95,7 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
         collections: collections,
         products_paths: productPaths,
         podmanImage: 'localhost/molecule-runner',
-        pathToScript: 'ansible-validate-downstream-collection.sh',
+        pathToScript: 'ansible/validate-downstream-collection.sh',
         jobPrefix: 'ansible-downstream-runner-',
         checkoutProject: "False"
     ).build(this)
