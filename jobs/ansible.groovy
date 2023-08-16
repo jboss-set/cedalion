@@ -124,6 +124,7 @@ upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexm
 upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
 moleculeJobWithGitUrl('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'olympus')
 moleculeJobWithGitUrl('common-criteria', upstreamProjectsPortOffsetstart++, 'https://github.com/ansible-middleware/common_criteria.git')
+upstreamCIJob('common', upstreamProjectsPortOffsetstart++)
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 //
 // CI jobs for downstream (Janus generated) collections
