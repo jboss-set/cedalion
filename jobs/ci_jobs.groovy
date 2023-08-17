@@ -10,7 +10,7 @@ new ci_jobs.Builder(repoName: 'mjolnir', javaHome: "/opt/oracle/openjdk11-latest
 
 new ci_jobs.Builder(repoName: 'prbz-overview').buildMvnJob(this)
 
-new ci_jobs.Builder(repoName: 'harmonia', branch: 'olympus').buildBashJob(this)
+new ci_jobs.Builder(repoName: 'harmonia', branch: 'main').buildBashJob(this)
 
 new ci_jobs.Builder(jobName: 'ci-harmonia-cci', repoName: 'harmonia', branch: 'olympus-cci').buildBashJob(this)
 

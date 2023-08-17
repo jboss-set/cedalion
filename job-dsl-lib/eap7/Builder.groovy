@@ -11,7 +11,7 @@ class Builder {
     String mavenSettingsXml
     String javaHome='/opt/oracle/java'
     String harmoniaScript = 'eap-job/olympus.sh'
-    String harmoniaBranch = 'olympus'
+    String harmoniaBranch = 'main'
     String gitRepositoryUrl = 'git@github.com:jbossas/jboss-eap7.git'
     def customParams
 

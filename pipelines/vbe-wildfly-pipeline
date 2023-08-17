@@ -70,7 +70,7 @@ pipeline {
                 }
 
                 dir('harmonia') {
-                  git branch: 'olympus', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
+                  git branch: 'main', url: 'https://github.com/jboss-set/harmonia.git', poll: false, changelog: false
                 }
 
                 script {
@@ -79,7 +79,7 @@ pipeline {
                     }
                     dumpParams("${env.WORKSPACE}/job_params.txt")
                     env.BUILD_SCRIPT = "${env.WORKSPACE}/hera/build-wrapper.sh"
-                    
+
                		if( "${env.JOB_NAME}".endsWith("build") ) {
                             def parent_jobname = "ci-maven-vbe"
                             def lastSuccessfulBuildId = lookupLastSuccessfulBuildId(parent_jobname)
