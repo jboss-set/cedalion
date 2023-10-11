@@ -1,11 +1,26 @@
-def tagBuild(String jobname, String releaseName) {
-    def jobRunResults = build job: "${jobname}"
+def tagBuild(String jobname, String releaseName, String gitBranch = "main") {
+    echo "Triggers ${jobname} with branch ${gitBranch}"
+    def jobRunResults = build(job: "${jobname}",parameters: [string(name: 'GIT_REPOSITORY_BRANCH', value: "${gitBranch}")])
     def job = Jenkins.instance.getItem("${jobname}")
     def build = job.getBuild(jobRunResults.id)
     echo "${jobname} - set release build to keep log forever"
     build.keepLog(true)
     echo "${jobname} - set release name to ${releaseName}"
     build.setDisplayName(releaseName)
+}
+
+def returnPathToTarball(Collection coll) {
+    for ( item in coll) {
+        if ( item.toString().endsWith(".tar.gz") ) return item.toString()
+    }
+}
+
+def retrievePathToJanusDownload(String jobname) {
+    def job = Jenkins.instance.getItem(jobname)
+    def build = job.getLastBuild()
+    def jobUrl = build.url
+    def artifactPath = returnPathToTarball(build.artifacts)
+    return "${jobUrl}/artifact/${artifactPath}"
 }
 
 node {
@@ -16,10 +31,10 @@ node {
    def buildUrls = []
 
    stage("Run upstream CI for collection ${collectionName}") {
-       tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}")
+       tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
    stage('Run Janus to generate downstream collection') {
-       tagBuild("ansible-janus-${collectionName}", "${releaseName}")
+       tagBuild("ansible-janus-${collectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
    stage('run-parallel-branches') {
        stage("Parallel") {
@@ -37,15 +52,18 @@ node {
        }
    }
    stage("Report") {
-            echo "${buildUrls}"
-            //env.PATH_TO_REPORT = "${env.WORKSPACE/release_report.html}"
-            env.BUILD_CI = "${buildUrls[0]}"
-            env.BUILD_JANUS = "${buildUrls[1]}"
-            env.BUILD_DOWNSTREAM_CI = "${buildUrls[2]}"
-            env.BUILD_DOT = "${buildUrls[3]}"
-            env.BUILD_RUNNER = "${buildUrls[4]}"
-            sh(script:"/var/jenkins_home/build-report-ansible-release-report.sh", returnStdout: true)
-            archiveArtifacts artifacts: 'report.html', followSymlinks: false
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-       }
+      echo "${buildUrls}"
+      //env.PATH_TO_REPORT = "${env.WORKSPACE/release_report.html}"
+      if ( env.ANSIBLE_RELEASE_DEBUG) echo "Path to jobs: ${buildUrls}"
+      env.BUILD_RELEASE_ARTEFACTS = retrievePathToJanusDownload("ansible-janus-${collectionName}")
+      if ( env.ANSIBLE_RELEASE_DEBUG) echo "${env.BUILD_RELEASE_ARTEFACTS}"
+      env.BUILD_CI = "${buildUrls[0]}"
+      env.BUILD_JANUS = "${buildUrls[1]}"
+      env.BUILD_DOWNSTREAM_CI = "${buildUrls[2]}"
+      env.BUILD_DOT = "${buildUrls[3]}"
+      env.BUILD_RUNNER = "${buildUrls[4]}"
+      sh(script:"/var/jenkins_home/build-report-ansible-release-report.sh", returnStdout: true)
+      archiveArtifacts artifacts: 'report.html', followSymlinks: false
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+   }
 }
