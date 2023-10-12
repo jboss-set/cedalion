@@ -113,7 +113,15 @@ releaseCollection("data_grid", "infinispan")
 releaseCollection("sso","keycloak")
 releaseCollection("rhbk","keycloak")
 releaseCollection("amq_broker","amq")
-releaseCollection("runtimes_common","common")
+
+//releaseCollection("runtimes_common","common")
+new ansible.AnsibleReleaseBuilder(
+    projectName: "runtimes_common",
+    projectUpstreamName: "common",
+    pipelineFile: 'pipelines/ansible-release-common-pipeline',
+    fullRelease: 'False'
+    ).build(this)
+
 EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 //
 // CI Jobs for Ansible Middleware

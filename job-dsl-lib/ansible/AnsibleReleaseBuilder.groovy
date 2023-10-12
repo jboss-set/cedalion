@@ -9,6 +9,7 @@ class AnsibleReleaseBuilder {
     String jobPrefix = 'ansible-release-'
     String jobSuffix = ''
     String pipelineFile = 'pipelines/ansible-release-pipeline'
+    String fullRelease = 'True'
     String releaseName = ""
 
     def build(factory) {
@@ -47,6 +48,10 @@ class AnsibleReleaseBuilder {
                     stringParam {
                       name("RELEASE_NAME")
                       defaultValue(releaseName)
+                    }
+                    stringParam {
+                      name("FULL_RELEASE")
+                      defaultValue(fullRelease)
                     }
                 }
             }
