@@ -7,6 +7,7 @@ def tagBuild(String jobname, String releaseName, String gitBranch = "main") {
     build.keepLog(true)
     echo "${jobname} - set release name to ${releaseName}"
     build.setDisplayName(releaseName)
+    return build.url
 }
 
 def returnPathToTarball(Collection coll) {
@@ -31,27 +32,30 @@ node {
    def buildUrls = []
 
    stage("Run upstream CI for collection ${collectionName}") {
-       tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
+       buildUrls[0] = tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
    stage('Run Janus to generate downstream collection') {
-       tagBuild("ansible-janus-${collectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
+       buildUrls[1] = tagBuild("ansible-janus-${collectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
    stage('run-parallel-branches') {
        stage("Parallel") {
            parallel (
                "Run downstream CI for collection ${collectionName}" : {
-                   tagBuild("ansible-downstream-ci-${collectionName}", "${releaseName}")
+                   buildUrls[2] = tagBuild("ansible-downstream-ci-${collectionName}", "${releaseName}")
                },
                "Run downstream-only tests (dot) for collection ${collectionName}" : {
-                   tagBuild("ansible-downstream-tests-${collectionName}-dot", "${releaseName}")
+                   buildUrls[3] = tagBuild("ansible-downstream-tests-${collectionName}-dot", "${releaseName}")
                },
                "Run downstream runner for collection ${collectionName}" : {
-                   tagBuild("ansible-downstream-runner-${collectionName}", "${releaseName}")
+                   buildUrls[4] = tagBuild("ansible-downstream-runner-${collectionName}", "${releaseName}")
                }
            )
        }
    }
    stage("Report") {
+      dir('harmonia') {
+        git url: "${env.HARMONIA_REPO}", branch: "${env.HARMONIA_BRANCH}", poll: false, changelog: false
+      }
       echo "${buildUrls}"
       //env.PATH_TO_REPORT = "${env.WORKSPACE/release_report.html}"
       if ( env.ANSIBLE_RELEASE_DEBUG) echo "Path to jobs: ${buildUrls}"
@@ -62,7 +66,8 @@ node {
       env.BUILD_DOWNSTREAM_CI = "${buildUrls[2]}"
       env.BUILD_DOT = "${buildUrls[3]}"
       env.BUILD_RUNNER = "${buildUrls[4]}"
-      sh(script:"/var/jenkins_home/build-report-ansible-release-report.sh", returnStdout: true)
+      //sh(script:"${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}", returnStdout: true)
+      sh(script:"${env.WORKSPACE}/harmonia/ansible/release/report.sh", returnStdout: true)
       archiveArtifacts artifacts: 'report.html', followSymlinks: false
       publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
    }

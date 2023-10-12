@@ -25,20 +25,16 @@ class AnsibleReleaseBuilder extends AbstractAnsibleBuilder {
                 }
                 parameters {
                     stringParam {
-                      name("COLLECTION_NAME")
-                      defaultValue(projectName)
-                    }
-                    stringParam {
-                      name("PROJECT_UPSTREAM_NAME")
-                      defaultValue(projectUpstreamName ?: projectName)
-                    }
-                    stringParam {
-                      name("GIT_REPOSITORY_URL")
-                      defaultValue(gitUrl)
-                    }
-                    stringParam {
                       name("GIT_REPOSITORY_BRANCH")
                       defaultValue(branch)
+                    }
+                    stringParam {
+                      name ("HARMONIA_REPO")
+                      defaultValue(harmoniaGitUrl)
+                    }
+                    stringParam {
+                      name ("HARMONIA_BRANCH")
+                      defaultValue(harmoniaBranch)
                     }
                     stringParam {
                       name("RELEASE_NAME")
