@@ -1,13 +1,8 @@
 package ansible
 
-class AnsibleReleaseBuilder {
+class AnsibleReleaseBuilder extends AbstractAnsibleBuilder {
 
-    String projectName
-    String projectUpstreamName
-    String gitUrl = "https://github.com/ansible-middleware/"
-    String branch = "main"
     String jobPrefix = 'ansible-release-'
-    String jobSuffix = ''
     String pipelineFile = 'pipelines/ansible-release-pipeline'
     String fullRelease = 'True'
     String releaseName = ""
