@@ -126,6 +126,13 @@ pipeline {
             }
             cleanWs()
         }
+        success {
+            script {
+              if ( isJanusJob() ) {
+                build wait: false, job: 'ansible-downstream-ci-' + ${env.PROJECT_NAME}
+              }
+            }
+        }
         failure {
             mail to: 'Romain Pelisse <rpelisse@redhat.com>, Guido Grazioli <ggraziol@redhat.com>',
                  from: 'Romain Pelisse <rpelisse@redhat.com>',
