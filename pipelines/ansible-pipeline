@@ -129,7 +129,7 @@ pipeline {
         success {
             script {
               if ( isJanusJob() ) {
-                build wait: false, job: 'ansible-downstream-ci-' + ${env.PROJECT_NAME}
+                build wait: false, job: "ansible-downstream-ci-${env.PROJECT_NAME}"
               }
             }
         }
