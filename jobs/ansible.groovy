@@ -128,7 +128,7 @@ EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 // CI Jobs for Ansible Middleware
 //
 int upstreamProjectsPortOffsetstart = 22000
-[ 'jws', 'wildfly', 'infinispan'].each { project -> upstreamCIJob(project, upstreamProjectsPortOffsetstart++) }
+[ 'jws', 'wildfly', 'infinispan','amq_streams'].each { project -> upstreamCIJob(project, upstreamProjectsPortOffsetstart++) }
 // upstreamCIJob('jbcs',upstreamProjectsPortOffsetstart++)
 upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexml")
 upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
