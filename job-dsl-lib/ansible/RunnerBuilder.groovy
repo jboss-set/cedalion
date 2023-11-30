@@ -24,6 +24,10 @@ class RunnerBuilder extends AbstractAnsibleBuilder {
         name("SYSTEMD_ENABLED")
         defaultValue('True')
       }
+      stringParam {
+        name("PLAYBOOK")
+        defaultValue('playbook')
+      }
     }
   }
 }
