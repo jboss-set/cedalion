@@ -57,6 +57,7 @@ class AbstractAnsibleBuilder {
                     stringParam {
                       name ("GIT_REPOSITORY_BRANCH")
                       defaultValue(branch)
+                      description("A branch name (ie. main), or a refspec (ie. refs/tags/x.y.x), or a commit sha (ie. cafebabe)")
                     }
                     stringParam {
                       name("CHECKOUT_GIT_PROJECT")

@@ -85,7 +85,8 @@ pipeline {
                    if ( "${env.CHECKOUT_GIT_PROJECT}".equalsIgnoreCase("True") ) {
                      dir('workdir') {
                        echo "Workdir is check out of project: ${env.GIT_REPOSITORY_URL}"
-                       git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                       // git step does not support tag or sha-1 checkout - git url: "${env.GIT_REPOSITORY_URL}", branch: "${env.GIT_REPOSITORY_BRANCH}"
+                       checkout([$class: 'GitSCM', branches: [[name: "${env.GIT_REPOSITORY_BRANCH}"]], userRemoteConfigs: [[url: "${env.GIT_REPOSITORY_URL}"]]])
                      }
                    }
                    if ( isJanusJob() ) {
