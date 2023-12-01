@@ -2,7 +2,7 @@ package ansible
 
 class RunnerBuilder extends AbstractAnsibleBuilder {
 
-  String playbook = 'playbooks/playbook.yml'
+  String playbook = 'playbook'
   String collections
   String products_paths
 
@@ -26,7 +26,7 @@ class RunnerBuilder extends AbstractAnsibleBuilder {
       }
       stringParam {
         name("PLAYBOOK")
-        defaultValue('playbook')
+        defaultValue(playbook)
       }
     }
   }
