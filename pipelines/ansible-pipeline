@@ -128,7 +128,7 @@ pipeline {
         }
         success {
             script {
-              if ( isJanusJob() ) {
+              if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
                 build wait: false, job: "ansible-downstream-ci-${env.PROJECT_NAME}"
                 build wait: false, job: "ansible-downstream-tests-${env.PROJECT_NAME}-dot"
                 build wait: false, job: "ansible-downstream-runner-${env.PROJECT_NAME}"
