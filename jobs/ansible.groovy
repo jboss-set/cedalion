@@ -149,7 +149,7 @@ EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 //
 String dotJobsPrefix = "ansible-downstream-tests-"
 int dotPortOffsetstart = 24000
-['jws', 'eap', 'sso', 'amq_broker'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
+['jws', 'eap', 'sso', 'amq_broker', 'rhbk'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
 EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 
 //
@@ -180,4 +180,5 @@ downstreamRunnerJob('jws','playbooks/playbook.yml', 'redhat_csp_download', '/web
 downstreamRunnerJob('eap', 'playbooks/playbook.yml', 'redhat_csp_download', '/eap7/7.4.0/jboss-eap-7.4.0.zip')
 downstreamRunnerJob('sso', 'playbooks/keycloak.yml', 'runtimes_common', '/sso/7.6.0/rh-sso-7.6.0-server-dist.zip')
 downstreamRunnerJob('amq_broker', 'playbooks/activemq.yml', 'runtimes_common', '/amq/broker/7.9.4/amq-broker-7.9.4-bin.zip')
+downstreamRunnerJob('rhbk', 'playbooks/keycloak_quarkus.yml', 'runtimes_common', '/keycloak/22.0.6/rhbk-22.0.6.zip')
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
