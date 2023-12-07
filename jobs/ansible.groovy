@@ -176,9 +176,9 @@ EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
 //
 // Job testing the default playbook of the downstream (Janus generated) collection
 //
-downstreamRunnerJob('jws','playbooks/playbook.yml', 'redhat_csp_download', '/webserver/5.6.0/jws-5.6.0-application-server.zip,/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip')
-downstreamRunnerJob('eap', 'playbooks/playbook.yml', 'redhat_csp_download', '/eap7/7.4.0/jboss-eap-7.4.0.zip')
-downstreamRunnerJob('sso', 'playbooks/keycloak.yml', 'runtimes_common', '/sso/7.6.0/rh-sso-7.6.0-server-dist.zip')
-downstreamRunnerJob('amq_broker', 'playbooks/activemq.yml', 'runtimes_common', '/amq/broker/7.9.4/amq-broker-7.9.4-bin.zip')
+downstreamRunnerJob('jws','playbook', 'redhat_csp_download', '/webserver/5.6.0/jws-5.6.0-application-server.zip,/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip')
+downstreamRunnerJob('eap', 'playbook', 'redhat_csp_download', '/eap7/7.4.0/jboss-eap-7.4.0.zip')
+downstreamRunnerJob('sso', 'keycloak', 'runtimes_common', '/sso/7.6.0/rh-sso-7.6.0-server-dist.zip')
+downstreamRunnerJob('amq_broker', 'activemq', 'runtimes_common', '/amq/broker/7.9.4/amq-broker-7.9.4-bin.zip')
 downstreamRunnerJob('rhbk', 'playbooks/keycloak_quarkus.yml', 'runtimes_common', '/keycloak/22.0.6/rhbk-22.0.6.zip')
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
