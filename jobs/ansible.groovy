@@ -149,7 +149,7 @@ EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 //
 String dotJobsPrefix = "ansible-downstream-tests-"
 int dotPortOffsetstart = 24000
-['jws', 'eap', 'sso', 'amq_broker', 'rhbk'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
+['jws', 'eap', 'sso', 'amq_broker', 'rhbk', 'amq_streams'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
 EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 
 //
