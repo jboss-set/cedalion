@@ -26,7 +26,7 @@ class RunnerBuilder extends AbstractAnsibleBuilder {
       }
       stringParam {
         name("PLAYBOOK")
-        defaultValue('playbook')
+        defaultValue(playbook)
       }
     }
   }
