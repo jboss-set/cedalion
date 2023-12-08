@@ -113,6 +113,7 @@ releaseCollection("data_grid", "infinispan")
 releaseCollection("sso","keycloak")
 releaseCollection("rhbk","keycloak")
 releaseCollection("amq_broker","amq")
+releaseCollection("amq_streams","amq_streams")
 
 //releaseCollection("runtimes_common","common")
 new ansible.AnsibleReleaseBuilder(
