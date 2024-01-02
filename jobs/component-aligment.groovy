@@ -1,4 +1,5 @@
 import alignment.Builder
+import alignment.channel.Builder as ChannelBuilder
 
 def defaultBinaryVersion = '1.0.4'
 def defaultFromAddr = 'thofman@redhat.com'
@@ -63,7 +64,7 @@ new Builder(jobName: 'component-alignment-elytron-web-master',
 new Builder(jobName: 'component-alignment-jboss-eap-7.4.x',
         projectRepositoryUrl: 'git@github.com:jbossas/jboss-eap7.git',
         projectRepositoryBranch: '7.4.x',
-        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com/jboss-set/dependency-alignment-configs.git',
         configRepositoryBranch: 'master',
         configFile: 'rules-eap-74.json',
         binaryVersion: defaultBinaryVersion,
@@ -77,7 +78,7 @@ new Builder(jobName: 'component-alignment-jboss-eap-7.4.x',
 new Builder(jobName: 'component-alignment-wildfly-core-eap-15.0.x',
         projectRepositoryUrl: 'git@github.com:jbossas/wildfly-core-eap.git',
         projectRepositoryBranch: '15.0.x',
-        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com/jboss-set/dependency-alignment-configs.git',
         configRepositoryBranch: 'master',
         configFile: 'rules-eap-74.json',
         binaryVersion: defaultBinaryVersion,
@@ -88,15 +89,7 @@ new Builder(jobName: 'component-alignment-wildfly-core-eap-15.0.x',
         toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
 ).build(this)
 
-new Builder(jobName: 'component-alignment-jboss-eap-8.0.x',
-        projectRepositoryUrl: 'git@github.com:jbossas/jboss-eap8.git',
-        projectRepositoryBranch: '8.0.x',
-        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
-        configRepositoryBranch: 'master',
-        configFile: 'rules-eap-80.json',
-        binaryVersion: defaultBinaryVersion,
-        loggerUri: defaultLoggerUri,
-        loggerCode: 'eap-8.0.x',
+new ChannelBuilder(jobName: 'component-alignment-jboss-eap-8.0.x',
         subject: 'Possible component upgrades report - jboss-eap:8.0.x',
         fromAddr: defaultFromAddr,
         toAddr: 'jboss-set-ops@redhat.com,thofman@redhat.com'
@@ -105,7 +98,7 @@ new Builder(jobName: 'component-alignment-jboss-eap-8.0.x',
 new Builder(jobName: 'component-alignment-wildfly-core-eap-21.0.x',
         projectRepositoryUrl: 'git@github.com:jbossas/wildfly-core-eap.git',
         projectRepositoryBranch: '21.0.x',
-        configRepositoryUrl: 'https://gitlab.cee.redhat.com//jboss-set/dependency-alignment-configs.git',
+        configRepositoryUrl: 'https://gitlab.cee.redhat.com/jboss-set/dependency-alignment-configs.git',
         configRepositoryBranch: 'master',
         configFile: 'rules-eap-80.json',
         binaryVersion: defaultBinaryVersion,

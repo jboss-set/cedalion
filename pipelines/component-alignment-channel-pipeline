@@ -1,0 +1,74 @@
+/**
+ * This is a version of component alignment pipeline that compares artifact versions in a wildfly channel
+ * (rather than in the source code), against the contents of defined repositories.
+ */
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // download tools
+                sh """
+                    # Delete previously generated files if present
+                    rm -fr *.html *.yaml *.jar
+
+                    readonly SENDMAIL_URL='https://github.com/jboss-set/sendmail/releases/download/1.0.0/sendmail-1.0.0-jar-with-dependencies.jar'
+                    curl -L "\${SENDMAIL_URL}"
+                    
+                    readonly REPORTS_URL='https://github.com/TomasHofman/wildfly-channel-reports/releases/download/1.0.2/wildfly-channel-reports-1.0.2-jar-with-dependencies.jar'
+                    curl -L "\${REPORTS_URL}"
+                    
+                    # Channel referencing the latest manifest published by the EAP 8 pipeline
+                    cat >channel.yaml <<EOF
+---
+schemaVersion: 2.0.0
+name: "eap8-channel"
+resolve-if-no-stream: none
+blocklist:
+  url: "https://gitlab.cee.redhat.com/jboss-set/channel-definitions/-/raw/main/eap-80-build/blocklist.yaml"
+manifest:
+  url: "https://eapdev-jenkins-csb-jbossset.apps.ocp-c1.prod.psi.redhat.com/view/EAP%208.0/job/eap-8.0/job/pipeline-jobs/job/publish-channel/lastSuccessfulBuild/artifact/eap8-manifest-proposed.yaml"
+repositories:
+  - id: "brew"
+    url: "https://download.devel.redhat.com/brewroot/repos/jb-eap-8.0-maven-build/latest/maven/"
+  - id: "indy"
+    url: "https://indy.psi.redhat.com/browse/maven/hosted/pnc-builds/"
+EOF
+                    """
+            }
+        }
+        stage ('Run Report') {
+            steps {
+                sh """
+                    # Generate the report and upgraded manifests
+                    java -jar wildfly-channel-reports-*.jar \
+                        find-upgrades file:channel.yaml \
+                        --repositories=mrrc::https://maven.repository.redhat.com/ga/,brew::https://download.eng.brq.redhat.com/brewroot/repos/jb-eap-8.0-maven-build/latest/maven/
+                    
+                    # If the report came out empty, the file would not be generated
+                    if [ -f report.html ]; then
+                        java -jar sendmail-*.jar \
+                            --content report.html \
+                            --content-type text/html \
+                            --subject '${env.SUBJECT}' \
+                            --from '${env.FROM_ADDR}' \
+                            --to '${env.TO_ADDR}' \
+                            --smtp-server smtp.corp.redhat.com \
+                            --smtp-port 587
+                    fi
+                    """
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts('report.html, *.yaml')
+        }
+        failure {
+            mail to: 'thofman@redhat.com', from: 'thofman@redhat.com',
+                    subject: "Build: ${env.JOB_NAME} - Failed",
+                    body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}"
+        }
+    }
+}
