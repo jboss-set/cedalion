@@ -28,6 +28,28 @@ class JobSharedUtils {
         }
     }
 
+    static harmoniaParameters(def params, def harmoniaRepositoryUrl = 'https://github.com/jboss-set/harmonia', def branch = 'main') {
+        params.with {
+            stringParam {
+                name ("HARMONIA_REPO")
+                defaultValue(harmoniaRepositoryUrl)
+            }
+            stringParam {
+                name ("HARMONIA_BRANCH")
+                defaultValue(branch)
+            }
+        }
+    }
+
+    static podmanImageParameter(def params, def imageName = 'localhost/automatons') {
+        params.with {
+            stringParam {
+                name ("BUILD_PODMAN_IMAGE")
+                defaultValue(imageName)
+            }
+        }
+    }
+
     static mavenParameters(Map args) {
         if (args.mavenSettingsXml == null) {
             args.mavenSettingsXml = '/opt/tools/settings.xml'
