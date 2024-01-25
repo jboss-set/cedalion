@@ -61,8 +61,8 @@ class Builder {
                 baseJob(delegate)
                 parameters {
                     JobSharedUtils.gitParameters(delegate, repoUrl, 'master')
-                    JobSharedUtils.harmoniaParameters(params)
-                    JobSharedUtils.podmanImageParameter(params)
+                    JobSharedUtils.harmoniaParameters(delegate)
+                    JobSharedUtils.podmanImageParameter(delegate)
                     JobSharedUtils.mavenParameters(params: delegate, javaHome: javaHome)
                     // override MAVEN_OPTS to add -Dnorpm
                     stringParam {
