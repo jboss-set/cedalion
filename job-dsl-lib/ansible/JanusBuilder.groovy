@@ -99,6 +99,10 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                       name("UPSTREAM_COLLECTION_NAME")
                       defaultValue(upstreamCollectionName)
                     }
+                    stringParam {
+                      name("INTERNAL_GIT_REPOSITORY_URL")
+                      defaultValue(INTERNAL_GIT_REPOSITORY_URL)
+                    }
                 }
             }
         }
