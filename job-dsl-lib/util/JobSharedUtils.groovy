@@ -41,6 +41,21 @@ class JobSharedUtils {
         }
     }
 
+    /* default to /not/there as some jobs may not want to have the jdk/mvn in /opt mounted
+       and may use /opt for other usage. */
+    static toolsDirParameters(def params, def toolsDir = '/not/there', def toolsMount = '/not/there') {
+        params.with {
+            stringParam {
+                name ("TOOLS_DIR")
+                defaultValue(toolsDir)
+            }
+            stringParam {
+                name ("TOOLS_MOUNT")
+                defaultValue(toolsMount)
+            }
+        }
+    }
+
     static podmanImageParameter(def params, def imageName = 'localhost/automatons') {
         params.with {
             stringParam {
