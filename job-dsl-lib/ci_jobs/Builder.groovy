@@ -61,7 +61,7 @@ class Builder {
                 baseJob(delegate)
                 parameters {
                     JobSharedUtils.gitParameters(delegate, repoUrl, 'master')
-                    JobSharedUtils.harmoniaParameters(delegate)
+                    JobSharedUtils.toolsDirParameters(delegate,'/opt', '/opt')
                     JobSharedUtils.podmanImageParameter(delegate)
                     JobSharedUtils.mavenParameters(params: delegate, javaHome: javaHome)
                     // override MAVEN_OPTS to add -Dnorpm
@@ -72,6 +72,10 @@ class Builder {
                     stringParam {
                         name ("MAVEN_GOALS")
                         defaultValue(mavenGoals)
+                    }
+                    stringParam {
+                        name("JAVA_HOME")
+                        defaultValue("/opt/oracle/jdk17-latest")
                     }
                 }
             }
