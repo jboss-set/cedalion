@@ -1,6 +1,6 @@
 def tagBuild(String jobname, String releaseName, String gitBranch = "main") {
     echo "Triggers ${jobname} with branch ${gitBranch}"
-    def jobRunResults = build(job: "${jobname}",parameters: [string(name: 'GIT_REPOSITORY_BRANCH', value: "${gitBranch}")])
+    def jobRunResults = build(job: "${jobname}", parameters: [string(name: 'GIT_REPOSITORY_BRANCH', value: "${gitBranch}"), string(name: 'RELEASE_NAME', value: "${releaseName}")])
     def job = Jenkins.instance.getItem("${jobname}")
     def build = job.getBuild(jobRunResults.id)
     echo "${jobname} - set release build to keep log forever"
