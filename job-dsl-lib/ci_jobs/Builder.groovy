@@ -75,7 +75,7 @@ class Builder {
                     }
                     stringParam {
                         name("JAVA_HOME")
-                        defaultValue("/opt/oracle/jdk17-latest")
+                        defaultValue("/opt/oracle/jdk11")
                     }
                 }
             }
