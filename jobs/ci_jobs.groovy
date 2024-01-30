@@ -1,7 +1,5 @@
 new ci_jobs.Builder(repoName: 'aphrodite').buildMvnJob(this)
 
-new ci_jobs.Builder(repoName: 'assistant').buildMvnJob(this)
-
 new ci_jobs.Builder(repoName: 'bug-clerk').buildMvnJob(this)
 
 new ci_jobs.Builder(repoName: 'cryo').buildMvnJob(this)
