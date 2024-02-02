@@ -32,6 +32,7 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                       name("PROJECT_UPSTREAM_NAME")
                       defaultValue(projectUpstreamName ?: projectName)
                     }
+                    string {
                       name ("PATH_TO_SCRIPT")
                       defaultValue(pathToScript)
                     }
