@@ -40,14 +40,8 @@ class AbstractAnsibleBuilder {
                     scm (schedule)
                 }
                 parameters {
-                    stringParam {
-                      name("PROJECT_NAME")
-                      defaultValue(projectName)
-                    }
-                    stringParam {
-                      name("PROJECT_UPSTREAM_NAME")
-                      defaultValue(projectUpstreamName ?: projectName)
-                    }
+                    JobSharedUtils.projectName(delegate, projectName)
+                    JobSharedUtils.projectUpstreamName(delegate, '' + (projectName ?: projectUpstreamName))
                     stringParam {
                       name ("PATH_TO_SCRIPT")
                       defaultValue(pathToScript)
@@ -63,10 +57,7 @@ class AbstractAnsibleBuilder {
                     }
                     JobSharedUtils.harmoniaParameters(delegate)
                     JobSharedUtils.podmanImageParameter(delegate, podmanImage)
-                    stringParam {
-                      name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
-                      defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
-                    }
+                    JobSharedUtils.middlewareDownloadReleaseURL(delegate, downloadServerUrl)
                     stringParam {
                       name ("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')

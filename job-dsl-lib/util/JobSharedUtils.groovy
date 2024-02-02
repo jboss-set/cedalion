@@ -67,6 +67,27 @@ class JobSharedUtils {
         }
     }
 
+    static middlewareDownloadReleaseURL(def params, def downloadServerUrl) {
+      params.with {
+        stringParam("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
+        defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
+      }
+    }
+
+    static projectName(def params, def projectName) {
+      params.with {
+        stringParam("PROJECT_NAME")
+        defaultValue(projectName)
+      }
+    }
+
+    static projectUpstreamName(def params, def projectUpstreamName) {
+      params.with {
+        stringParam("PROJECT_UPSTREAM_NAME")
+        defaultValue(projectUpstreamName)
+      }
+    }
+
     static mavenParameters(Map args) {
         if (args.mavenSettingsXml == null) {
             args.mavenSettingsXml = '/opt/tools/settings.xml'
