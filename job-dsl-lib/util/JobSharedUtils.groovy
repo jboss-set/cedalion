@@ -84,7 +84,7 @@ class JobSharedUtils {
     static projectUpstreamName(def params, def projectUpstreamName) {
       params.with {
         stringParam("PROJECT_UPSTREAM_NAME")
-        defaultValue(projectUpstreamName)
+        defaultValue(projectUpstreamName.toString)
       }
     }
 
