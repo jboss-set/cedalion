@@ -21,9 +21,6 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                     artifactDaysToKeep(60)
                     artifactNumToKeep(5)
                 }
-                triggers {
-                    setupTrigger ? upstream('ansible-ci-' + (upstreamCollectionName ?: projectUpstreamName),'FAILURE') : scm (schedule)
-                }
                 parameters {
                     stringParam {
                       name("PROJECT_NAME")
