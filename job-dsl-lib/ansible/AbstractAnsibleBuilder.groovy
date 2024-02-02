@@ -62,7 +62,7 @@ class AbstractAnsibleBuilder {
                       defaultValue(copyFromParentJob)
                     }
                     JobSharedUtils.harmoniaParameters(delegate)
-                    JobSharedUtils.podmanImageParameter(delegate, imageName: podmanImage)
+                    JobSharedUtils.podmanImageParameter(delegate, podmanImage)
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
                       defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
