@@ -1,5 +1,7 @@
 package ansible
 
+import util.JobSharedUtils
+
 class AnsibleReleaseBuilder extends AbstractAnsibleBuilder {
 
     String jobPrefix = 'ansible-release-'
@@ -37,14 +39,7 @@ class AnsibleReleaseBuilder extends AbstractAnsibleBuilder {
                       defaultValue(branch)
                       description("A branch name (ie. main), or a refspec (ie. refs/tags/x.y.x), or a commit sha (ie. cafebabe)")
                     }
-                    stringParam {
-                      name ("HARMONIA_REPO")
-                      defaultValue(harmoniaGitUrl)
-                    }
-                    stringParam {
-                      name ("HARMONIA_BRANCH")
-                      defaultValue(harmoniaBranch)
-                    }
+                    JobSharedUtils.harmoniaParameters(delegate)
                     stringParam {
                       name("RELEASE_NAME")
                       defaultValue(releaseName)
