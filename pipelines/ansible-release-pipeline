@@ -31,6 +31,7 @@ node {
    def releaseName = "${env.RELEASE_NAME}"
    def buildUrls = []
 
+   currentBuild.setDisplayName(releaseName ?: "TEST")
    stage("Run upstream CI for collection ${collectionName}") {
        buildUrls[0] = tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
