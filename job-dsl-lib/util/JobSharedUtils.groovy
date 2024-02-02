@@ -48,10 +48,12 @@ class JobSharedUtils {
             stringParam {
                 name ("TOOLS_DIR")
                 defaultValue(toolsDir)
+                description("This dummy value ensures the /opt folder is NOT added as a volume")
             }
             stringParam {
                 name ("TOOLS_MOUNT")
                 defaultValue(toolsMount)
+                description("This dummy value ensures the /opt folder is NOT added as a volume")
             }
         }
     }
