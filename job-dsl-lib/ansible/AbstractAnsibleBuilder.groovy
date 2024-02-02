@@ -1,5 +1,7 @@
 package ansible
 
+import util.JobSharedUtils
+
 class AbstractAnsibleBuilder {
 
     String projectName
@@ -50,15 +52,7 @@ class AbstractAnsibleBuilder {
                       name ("PATH_TO_SCRIPT")
                       defaultValue(pathToScript)
                     }
-                    stringParam {
-                      name ("GIT_REPOSITORY_URL")
-                      defaultValue(gitUrl)
-                    }
-                    stringParam {
-                      name ("GIT_REPOSITORY_BRANCH")
-                      defaultValue(branch)
-                      description("A branch name (ie. main), or a refspec (ie. refs/tags/x.y.x), or a commit sha (ie. cafebabe)")
-                    }
+                    JobSharedUtils.gitParameters(delegate, gitUrl, branch)
                     stringParam {
                       name("CHECKOUT_GIT_PROJECT")
                       defaultValue(checkoutProject)
@@ -67,18 +61,8 @@ class AbstractAnsibleBuilder {
                       name("COPY_FROM_PARENT_JOB")
                       defaultValue(copyFromParentJob)
                     }
-                    stringParam {
-                      name ("HARMONIA_REPO")
-                      defaultValue(harmoniaGitUrl)
-                    }
-                    stringParam {
-                      name ("HARMONIA_BRANCH")
-                      defaultValue(harmoniaBranch)
-                    }
-                    stringParam {
-                      name ("BUILD_PODMAN_IMAGE")
-                      defaultValue(podmanImage)
-                    }
+                    JobSharedUtils.harmoniaParameters(delegate)
+                    JobSharedUtils.podmanImageParameter(delegate, podmanImage)
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
                       defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
@@ -87,16 +71,7 @@ class AbstractAnsibleBuilder {
                       name ("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
                     }
-                    stringParam {
-                      name ("TOOLS_DIR")
-                      defaultValue("/not/there")
-                      description("This dummy value ensures the /opt folder is NOT added as a volume")
-                    }
-                    stringParam {
-                      name ("TOOLS_MOUNT")
-                      defaultValue("/not/there")
-                      description("This dummy value ensures the /opt folder is NOT added as a volume")
-                    }
+                    JobSharedUtils.toolsDirParameters(delegate)
                 }
             }
         }
