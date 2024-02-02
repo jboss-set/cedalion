@@ -128,10 +128,18 @@ pipeline {
         }
         success {
             script {
-              if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
-                build wait: false, job: "ansible-downstream-ci-${env.PROJECT_NAME}"
-                build wait: false, job: "ansible-downstream-tests-${env.PROJECT_NAME}-dot"
-                build wait: false, job: "ansible-downstream-runner-${env.PROJECT_NAME}"
+              // The release job will take care of trigger jobs in the right order
+              if ( "${env.RELEASE_NAME}".equals("") ) {
+                // if this job is upstream CI, then we fire the associated Janus job
+                if ( "${env.JOB_NAME}".equals("ansible-ci-${env.PROJECT_UPSTREAM_NAME}") ) {
+                    build wait: false, job: "ansible-janus-${env.PROJECT_NAME}"
+                }
+                // if this jobs is a Janus job, then we triggered the three downstream job
+                if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
+                  build wait: false, job: "ansible-downstream-ci-${env.PROJECT_NAME}"
+                  build wait: false, job: "ansible-downstream-tests-${env.PROJECT_NAME}-dot"
+                  build wait: false, job: "ansible-downstream-runner-${env.PROJECT_NAME}"
+                }
               }
             }
         }
