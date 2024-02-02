@@ -1,5 +1,7 @@
 package ansible
 
+import util.JobSharedUtils
+
 class AbstractAnsibleBuilder {
 
     String projectName
