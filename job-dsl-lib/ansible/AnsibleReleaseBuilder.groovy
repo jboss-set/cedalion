@@ -26,7 +26,7 @@ class AnsibleReleaseBuilder extends AbstractAnsibleBuilder {
                     artifactNumToKeep(5)
                 }
                 parameters {
-                    JobSharedUtils.projectUpstreamName(delegate, '' + (projectName ?: projectUpstreamName))
+                    JobSharedUtils.projectUpstreamName(delegate, (projectName != null) ? projectUpstreamName: projectName)
                     stringParam {
                       name("COLLECTION_NAME")
                       defaultValue(projectName)

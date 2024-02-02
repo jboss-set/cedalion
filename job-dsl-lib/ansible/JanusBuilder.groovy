@@ -28,7 +28,7 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                 }
                 parameters {
                     JobSharedUtils.projectName(delegate, projectName)
-                    JobSharedUtils.projectUpstreamName(delegate, '' + (projectName ?: projectUpstreamName) )
+                    JobSharedUtils.projectUpstreamName(delegate, (projectName != null) ? projectUpstreamName: projectName )
                     stringParam {
                       name ("PATH_TO_SCRIPT")
                       defaultValue(pathToScript)
