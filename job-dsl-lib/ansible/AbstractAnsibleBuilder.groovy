@@ -52,7 +52,7 @@ class AbstractAnsibleBuilder {
                       name ("PATH_TO_SCRIPT")
                       defaultValue(pathToScript)
                     }
-                    JobSharedUtils.gitParameters(params: delegate, gitRepositoryUrl: gitUrl, branch: branch)
+                    JobSharedUtils.gitParameters(delegate, gitUrl, branch)
                     stringParam {
                       name("CHECKOUT_GIT_PROJECT")
                       defaultValue(checkoutProject)
@@ -61,8 +61,8 @@ class AbstractAnsibleBuilder {
                       name("COPY_FROM_PARENT_JOB")
                       defaultValue(copyFromParentJob)
                     }
-                    JobSharedUtils.harmoniaParameters(params: delegate)
-                    JobSharedUtils.podmanImageParameter(params: delegate, imageName: podmanImage)
+                    JobSharedUtils.harmoniaParameters(delegate)
+                    JobSharedUtils.podmanImageParameter(delegate, imageName: podmanImage)
                     stringParam {
                       name("MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL")
                       defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
@@ -71,7 +71,7 @@ class AbstractAnsibleBuilder {
                       name ("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
                     }
-                    JobSharedUtils.toolsDirParameters(params: delegate)
+                    JobSharedUtils.toolsDirParameters(delegate)
                 }
             }
         }
