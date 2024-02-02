@@ -81,13 +81,6 @@ class JobSharedUtils {
       }
     }
 
-    static projectUpstreamName(def params, def projectUpstreamName) {
-      params.with {
-        stringParam("PROJECT_UPSTREAM_NAME")
-        defaultValue(projectUpstreamName.toString)
-      }
-    }
-
     static mavenParameters(Map args) {
         if (args.mavenSettingsXml == null) {
             args.mavenSettingsXml = '/opt/tools/settings.xml'
