@@ -4,7 +4,8 @@ def tagBuild(String jobname, String releaseName = "TEST", String gitBranch = "ma
     def job = Jenkins.instance.getItem("${jobname}")
     def build = job.getBuild(jobRunResults.id)
     echo "${jobname} - set release build to keep log forever"
-    build.keepLog(true)
+    if ( ! "TEST".equals(releaseName) )
+      build.keepLog(true)
     echo "${jobname} - set release name to ${releaseName}"
     build.setDisplayName(releaseName)
     return build.url
