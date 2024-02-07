@@ -2,7 +2,7 @@ import alignment.Builder
 
 def defaultBinaryVersion = '1.0.4'
 def defaultFromAddr = 'thofman@redhat.com'
-def defaultLoggerUri = 'https://component-upgrade-logger-jboss-set-psi.apps.ocp4.prod.psi.redhat.com/api'
+def defaultLoggerUri = 'https://component-upgrade-logger.apps.int.gpc.ocp-hub.prod.psi.redhat.com/api'
 
 new Builder(jobName: 'component-alignment-wildfly-main',
         projectRepositoryUrl: 'https://github.com/wildfly/wildfly.git',
