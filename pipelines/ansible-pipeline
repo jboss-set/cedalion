@@ -42,6 +42,13 @@ def isJanusJob() {
   return (! "null".equalsIgnoreCase("${env.JANUS_BRANCH}") && ! "null".equalsIgnoreCase("${env.JANUS_GIT_REPOSITORY_URL}") )
 }
 
+def triggerNextJob(String jobname) {
+    if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
+        echo "Trigger job ${jobname}:"
+        build wait: false, job: jobname
+    }
+}
+
 pipeline {
     agent any
 
@@ -128,17 +135,19 @@ pipeline {
         }
         success {
             script {
+              echo "Triggers other jobs if needed."
               // The release job will take care of trigger jobs in the right order
-              if ( "${env.RELEASE_NAME}".equals("") ) {
+              if ( "${env.RELEASE_NAME}" == "null" ) {
+                echo "Not a release job... Assessing if other jobs needs to be triggered."
                 // if this job is upstream CI, then we fire the associated Janus job
                 if ( "${env.JOB_NAME}".equals("ansible-ci-${env.PROJECT_UPSTREAM_NAME}") ) {
                     build wait: false, job: "ansible-janus-${env.PROJECT_NAME}"
                 }
                 // if this jobs is a Janus job, then we triggered the three downstream job
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
-                  build wait: false, job: "ansible-downstream-ci-${env.PROJECT_NAME}"
-                  build wait: false, job: "ansible-downstream-tests-${env.PROJECT_NAME}-dot"
-                  build wait: false, job: "ansible-downstream-runner-${env.PROJECT_NAME}"
+                  triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
+                  triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
+                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
                 }
               }
             }
