@@ -18,9 +18,6 @@ class Builder {
     String toAddr
 
     void build(factory) {
-        if (jobName == null) {
-            jobName = 'component-alignment-' + jobSuffix
-        }
         factory.with {
             pipelineJob(jobName) {
                 definition {
