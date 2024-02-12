@@ -10,7 +10,7 @@ def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-ci-",
         pathToScript: 'ansible/molecule/molecule.sh',
-        podmanImage: 'localhost/molecule-runner',
+        podmanImage: 'localhost/molecule-runner-9',
     ).build(this)
 }
 
@@ -23,7 +23,7 @@ def moleculeJobWithGitUrl(projectName, moleculeBuildId, gitUrl, branch = "main",
         branch: branch,
         jobPrefix: "ansible-ci-",
         pathToScript: 'ansible/molecule/molecule.sh',
-        podmanImage: 'localhost/molecule-runner',
+        podmanImage: 'localhost/molecule-runner-9',
     ).build(this)
 }
 
@@ -35,7 +35,7 @@ def downstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all", projec
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
         jobPrefix: "ansible-downstream-ci-",
-        podmanImage: 'localhost/molecule-runner',
+        podmanImage: 'localhost/molecule-runner-9',
         pathToScript: 'ansible/molecule/molecule-downstream.sh',
         copyFromParentJob: "True",
         checkoutProject: "False"
@@ -84,7 +84,7 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
       jobPrefix: jobPrefix,
       pathToScript: 'ansible/molecule/molecule.sh',
       gitUrl: buildGitUrl(projectName),
-      podmanImage: 'localhost/molecule-runner'
+      podmanImage: 'localhost/molecule-runner-9'
   ).build(this)
 }
 
@@ -94,7 +94,7 @@ def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
         playbook: playbook,
         collections: collections,
         products_paths: productPaths,
-        podmanImage: 'localhost/molecule-runner',
+        podmanImage: 'localhost/molecule-runner-9',
         pathToScript: 'ansible/validate-downstream-collection.sh',
         jobPrefix: 'ansible-downstream-runner-',
         checkoutProject: "False"
