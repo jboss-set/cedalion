@@ -2,9 +2,10 @@ def buildGitUrl(projectName, upstreamCollectionName = "") {
   return 'https://github.com/ansible-middleware/' + (upstreamCollectionName ?: projectName) + '.git'
 }
 
-def upstreamCIJob(projectName, moleculeBuildId, scenarioName = "--all") {
+def upstreamCIJob(projectName, projectUpstreamName, moleculeBuildId, scenarioName = "--all") {
   new ansible.MoleculeBuilder(
         projectName: projectName,
+        projectUpstreamName: projectUpstreamName,
         moleculeBuildId: moleculeBuildId,
         scenarioName: scenarioName,
         gitUrl: buildGitUrl(projectName),
@@ -128,10 +129,10 @@ EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 // CI Jobs for Ansible Middleware
 //
 int upstreamProjectsPortOffsetstart = 22000
-[ 'jws', 'wildfly', 'infinispan','amq_streams'].each { project -> upstreamCIJob(project, upstreamProjectsPortOffsetstart++) }
-// upstreamCIJob('jbcs',upstreamProjectsPortOffsetstart++)
-upstreamCIJob('keycloak', upstreamProjectsPortOffsetstart++, "default,overridexml")
-upstreamCIJob('amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
+
+[ 'jws': 'jws', 'wildfly': 'eap', 'infinispan': 'data_grid', 'amq_streams': 'amq_streams'].each { project, upstreamProject -> upstreamCIJob(project, upstreamProject, upstreamProjectsPortOffsetstart++) }
+upstreamCIJob('keycloak', 'sso', upstreamProjectsPortOffsetstart++, "default,overridexml")
+upstreamCIJob('amq', 'amq', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
 moleculeJobWithGitUrl('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'olympus')
 moleculeJobWithGitUrl('common-criteria', upstreamProjectsPortOffsetstart++, 'https://github.com/ansible-middleware/common_criteria.git')
 EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
