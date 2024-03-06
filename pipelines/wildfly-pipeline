@@ -36,6 +36,11 @@ pipeline {
         // -Dhttps.protocols=TLSv1.2 needs to move to Harmonia?
     }
 
+    environment {
+        PODMAN_CONTAINER_CPU = '4'
+        PODMAN_CONTAINER_MEMORY = '4g'
+    }
+
     stages {
         stage('Prep') {
             steps {
