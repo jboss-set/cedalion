@@ -138,7 +138,7 @@ pipeline {
             script {
               echo "Triggers other jobs if needed."
               // The release job will take care of trigger jobs in the right order
-              if ( "${env.RELEASE_NAME}" == "null" ) {
+              if ( "${env.RELEASE_NAME}" == "null" && ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 echo "Not a release job... Assessing if other jobs needs to be triggered."
                 // if this job is upstream CI, then we fire the associated Janus job
                 if ( "${env.JOB_NAME}".equals("ansible-ci-${env.PROJECT_UPSTREAM_NAME}") ) {
