@@ -136,16 +136,14 @@ pipeline {
         }
         success {
             script {
-              echo "Triggers other jobs if needed."
               // The release job will take care of trigger jobs in the right order
               if ( "${env.RELEASE_NAME}" == "null" && ! "zeus".equals("${env.PROJECT_NAME}") ) {
-                echo "Not a release job... Assessing if other jobs needs to be triggered."
-                // if this job is upstream CI, then we fire the associated Janus job
-                if ( "${env.JOB_NAME}".equals("ansible-ci-${env.PROJECT_UPSTREAM_NAME}") ) {
-                    build wait: false, job: "ansible-janus-${env.PROJECT_NAME}"
+                if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
+                  echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
+                  build wait: false, job: "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
                 }
-                // if this jobs is a Janus job, then we triggered the three downstream job
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
+                  echo "This is a Janus job, triggering downstream jobs."
                   triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
                   triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
                   triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
