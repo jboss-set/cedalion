@@ -29,7 +29,7 @@ pipelineJob(ITEM_NAME) {
         }
         stringParam {
             name ("VERSION")
-            defaultValue("0.8.12.Final")
+            defaultValue("0.8.13.Final")
         }
     }
 }
