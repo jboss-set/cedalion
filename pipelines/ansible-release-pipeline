@@ -1,13 +1,17 @@
-def tagBuild(String jobname, String releaseName = "TEST", String gitBranch = "main") {
-    echo "Triggers ${jobname} with branch ${gitBranch}"
-    def jobRunResults = build(job: "${jobname}", parameters: [string(name: 'GIT_REPOSITORY_BRANCH', value: "${gitBranch}"), string(name: 'RELEASE_NAME', value: "${releaseName}")])
-    def job = Jenkins.instance.getItem("${jobname}")
-    def build = job.getBuild(jobRunResults.id)
+def tagAndKeepForever(String jobname, String releaseName = "TEST", org.jenkinsci.plugins.workflow.job.WorkflowRun build) {
     echo "${jobname} - set release build to keep log forever"
     if ( ! "TEST".equals(releaseName) )
       build.keepLog(true)
     echo "${jobname} - set release name to ${releaseName}"
     build.setDisplayName(releaseName)
+}
+
+def tagBuild(String jobname, String releaseName = "TEST", String gitBranch = "main") {
+    echo "Triggers ${jobname} with branch ${gitBranch}"
+    def jobRunResults = build(job: "${jobname}", parameters: [string(name: 'GIT_REPOSITORY_BRANCH', value: "${gitBranch}"), string(name: 'RELEASE_NAME', value: "${releaseName}")])
+    def job = Jenkins.instance.getItem("${jobname}")
+    def build = job.getBuild(jobRunResults.id)
+    tagAndKeepForever(jobname, releaseName, build)
     return build.url
 }
 
@@ -42,7 +46,7 @@ node {
    stage('run-parallel-branches') {
        stage("Parallel") {
            parallel (
-               "Run downstream CI for collection ${collectionName}" : {
+      "Run downstream CI for collection ${collectionName}" : {
                    buildUrls[2] = tagBuild("ansible-downstream-ci-${collectionName}", "${releaseName}")
                },
                "Run downstream-only tests (dot) for collection ${collectionName}" : {
@@ -69,6 +73,7 @@ node {
       env.BUILD_DOT = "${buildUrls[3]}"
       env.BUILD_RUNNER = "${buildUrls[4]}"
       //sh(script:"${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}", returnStdout: true)
+      tagAndKeepForever("${env.JOB_NAME}",releaseName, currentBuild)
       sh(script:"${env.WORKSPACE}/harmonia/ansible/release/report.sh", returnStdout: true)
       archiveArtifacts artifacts: 'report.html', followSymlinks: false
       publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
