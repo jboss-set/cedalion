@@ -137,7 +137,7 @@ pipeline {
         success {
             script {
               // The release job will take care of trigger jobs in the right order
-              if ( "${env.RELEASE_NAME}" == "null" && ! "zeus".equals("${env.PROJECT_NAME}") ) {
+              if ( ("${env.RELEASE_NAME}" == "null" || "${env.RELEASE_NAME}" == "TEST") && ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
                   echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
                   build wait: false, job: "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
