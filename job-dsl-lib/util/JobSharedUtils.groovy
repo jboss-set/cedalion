@@ -93,6 +93,10 @@ class JobSharedUtils {
                 name ("MAVEN_OPTS")
                 defaultValue("-Dmaven.wagon.http.ssl.insecure=true -Dhttps.protocols=TLSv1.2")
             }
+            stringParam {
+                name ("MAVEN_ARGS")
+                defaultValue("")
+            }
         }
     }
 

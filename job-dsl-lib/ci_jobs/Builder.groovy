@@ -77,6 +77,10 @@ class Builder {
                         name("JAVA_HOME")
                         defaultValue("/opt/oracle/jdk11")
                     }
+                    stringParam {
+                        name("MAVEN_ARGS")
+                        defaultValue("")
+                    }
                 }
             }
         }
