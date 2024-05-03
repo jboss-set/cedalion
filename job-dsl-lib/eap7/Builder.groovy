@@ -81,14 +81,17 @@ class Builder {
             stringParam {
                 name ("HARMONIA_SCRIPT")
                 defaultValue(harmoniaScript)
+                description("The variable is the path, inside the Harmonia folder to the script being used. The job will execute the script or report an error if the script does not exist inside the folder.")
             }
             stringParam {
                 name("HARMONIA_BRANCH")
                 defaultValue(harmoniaBranch)
+                description("The variable contains the name of the branch of the Harmonia folder to use for this job. Normally it's should be 'main', but it can be changed to experiment changes on the Harmonia's script without affecting other jobs.")
             }
             stringParam {
                 name("HARMONIA_REPO")
                 defaultValue("https://github.com/jboss-set/harmonia.git")
+                description("This the URL to the Harmonia's repo used. It can be override so that user can create their own fork, implement any change they want, without having to modify the pipeline directly.")
             }
         }
     }
