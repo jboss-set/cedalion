@@ -19,6 +19,8 @@ class AbstractAnsibleBuilder {
     String pathToScript
     String downloadServerUrl
     String copyFromParentJob = "False"
+    String mailTo = "Ansible MW Core <ansible-middleware-core@redhat.com>"
+    String mailFrom = "Olympus CI <rpelisse@redhat.com>"
 
     def build(factory) {
         return factory.with {
@@ -68,10 +70,18 @@ class AbstractAnsibleBuilder {
                       defaultValue(downloadServerUrl != null ? downloadServerUrl : MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL)
                     }
                     stringParam {
-                      name ("JENKINS_JOBS_VOLUME_ENABLED")
+                      name("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
                     }
                     JobSharedUtils.toolsDirParameters(delegate)
+                    stringParam {
+                      name("EMAIL_RECIPIENT")
+                      defaultValue(mailTo)
+                    }
+                    stringParam {
+                      name("EMAIL_FROM")
+                      defaultValue(mailFrom)
+                    }
                 }
             }
         }
