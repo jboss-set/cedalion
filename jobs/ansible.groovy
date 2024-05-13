@@ -85,7 +85,8 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
       jobPrefix: jobPrefix,
       pathToScript: 'ansible/molecule/molecule.sh',
       gitUrl: buildGitUrl(projectName),
-      podmanImage: 'localhost/molecule-runner-9'
+      podmanImage: 'localhost/molecule-runner-9',
+      emailTo: "Ranabir Chakraborty <rchakrab@redhat.com>"
   ).build(this)
 }
 
