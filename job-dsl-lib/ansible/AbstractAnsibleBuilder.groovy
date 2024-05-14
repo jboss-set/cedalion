@@ -75,7 +75,7 @@ class AbstractAnsibleBuilder {
                     }
                     JobSharedUtils.toolsDirParameters(delegate)
                     stringParam {
-                      name("EMAIL_RECIPIENT")
+                      name("EMAIL_TO")
                       defaultValue(mailTo)
                     }
                     stringParam {
