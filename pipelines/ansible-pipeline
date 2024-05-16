@@ -45,7 +45,7 @@ def isJanusJob() {
 def triggerNextJob(String jobname) {
     if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
         echo "Trigger job ${jobname}:"
-        build wait: false, job: jobname
+        build wait: false, job: jobname, parameters: [string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}")]
     }
 }
 
@@ -140,7 +140,7 @@ pipeline {
               if ( "${env.RELEASE_NAME}" == "null" && ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
                   echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
-                  build wait: false, job: "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
+                  triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}")
                 }
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
                   echo "This is a Janus job, triggering downstream jobs."
