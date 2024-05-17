@@ -15,9 +15,6 @@ def lastSuccessfullBuildOfParentJob() {
   env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
   echo "Retrieve build id from ${env.PARENT_JOB_HOME}."
   env.LAST_SUCCESS_FULL_BUILD_ID = lookupLastSuccessfulBuildId(parent_jobname)
-  //TODO:
-  // if tag provided then => git url: "${env.GIT_REPOSITORY_URL}(gitlab)", branch: "${env.GIT_REPOSITORY_BRANCH}(tag)"
-  // else:
   echo "Run ${env.JOB_NAME} with last successful Janus build ${env.LAST_SUCCESS_FULL_BUILD_ID} of ${parent_jobname}."
 }
 
@@ -42,10 +39,16 @@ def isJanusJob() {
   return (! "null".equalsIgnoreCase("${env.JANUS_BRANCH}") && ! "null".equalsIgnoreCase("${env.JANUS_GIT_REPOSITORY_URL}") )
 }
 
+def isRelease() {
+  return (  ! "TEST".equals("${env.RELEASE_NAME}") &&
+            ! "".equals("{env.RELEASE_NAME}") &&
+            ! "${env.RELEASE_NAME}".equals("null") )
+}
+
 def triggerNextJob(String jobname) {
     if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
         echo "Trigger job ${jobname}:"
-        build wait: false, job: jobname, parameters: [string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}")]
+        build wait: isRelease(), job: jobname, parameters: [string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}")]
     }
 }
 
@@ -65,6 +68,7 @@ pipeline {
                 script {
                     echo "JOB_NAME:[${env.JOB_NAME}]"
                     echo "SCRIPT:[${env.PATH_TO_SCRIPT}]"
+                    echo "RELEASE_NAME:[${env.RELEASE_NAME}]"
                     echo "MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL:[${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}]"
                     // warning, GIT_BRANCH var alreads points to pipeline's branch
                     if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
@@ -137,16 +141,21 @@ pipeline {
         success {
             script {
               // The release job will take care of trigger jobs in the right order
-              if ( "${env.RELEASE_NAME}" == "null" && ! "zeus".equals("${env.PROJECT_NAME}") ) {
+              if ( ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
                   echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
                   triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}")
                 }
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
                   echo "This is a Janus job, triggering downstream jobs."
+                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
                   triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
                   triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
-                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
+                }
+                if ( isRelease() ) {
+                  echo "${env.RELEASE_NAME} - set release build to keep log forever"
+                  currentBuild.setKeepLog(true)
+                  currentBuild.setDisplayName("${env.RELEASE_NAME}")
                 }
               }
             }
