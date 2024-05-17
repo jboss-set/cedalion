@@ -73,6 +73,10 @@ class AbstractAnsibleBuilder {
                       name("JENKINS_JOBS_VOLUME_ENABLED")
                       defaultValue('True')
                     }
+                    stringParam {
+                      name("RELEASE_NAME")
+                      defaultValue('TEST')
+                    }
                     JobSharedUtils.toolsDirParameters(delegate)
                     stringParam {
                       name("EMAIL_TO")
