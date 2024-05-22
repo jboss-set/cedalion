@@ -43,7 +43,7 @@ node {
    stage("Run upstream CI for collection ${collectionName}") {
        build = tagBuild("ansible-ci-${upstreamCollectionName}", "${releaseName}", "${env.GIT_REPOSITORY_BRANCH}")
    }
-   stage("Report") {
+/*   stage("Report") {
       dir('harmonia') {
         git url: "${env.HARMONIA_REPO}", branch: "${env.HARMONIA_BRANCH}", poll: false, changelog: false
       }
@@ -57,5 +57,5 @@ node {
       sh(script:"${env.WORKSPACE}/harmonia/ansible/release/report.sh", returnStdout: true)
       archiveArtifacts artifacts: 'report.html', followSymlinks: false
       publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'report.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-  }
+  }*/
 }
