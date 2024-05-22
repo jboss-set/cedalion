@@ -41,7 +41,7 @@ def isJanusJob() {
 
 def isRelease() {
   return (  ! "TEST".equals("${env.RELEASE_NAME}") &&
-            ! "".equals("{env.RELEASE_NAME}") &&
+            ! "".equals("${env.RELEASE_NAME}") &&
             ! "${env.RELEASE_NAME}".equals("null") )
 }
 
