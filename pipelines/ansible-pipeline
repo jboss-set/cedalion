@@ -40,9 +40,10 @@ def isJanusJob() {
 }
 
 def isRelease(String releaseName) {
-  return (  ! "TEST".equals(releaseName) &&
-            ! "".equals(releaseName) &&
-            ! releaseName == null )
+  return (  (releaseName != null) &&
+            (! "".equals(releaseName)) &&
+            (! releaseName.startsWith("TEST"))
+         )
 }
 
 def triggerNextJob(String jobname) {
