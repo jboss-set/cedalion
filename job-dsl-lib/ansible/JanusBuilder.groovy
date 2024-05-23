@@ -78,7 +78,7 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                     }
                     stringParam {
                       name("RELEASE_NAME")
-                      defaultValue('TEST')
+                      defaultValue('')
                     }
                 }
             }

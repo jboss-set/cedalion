@@ -75,7 +75,7 @@ class AbstractAnsibleBuilder {
                     }
                     stringParam {
                       name("RELEASE_NAME")
-                      defaultValue('TEST')
+                      defaultValue('')
                     }
                     JobSharedUtils.toolsDirParameters(delegate)
                     stringParam {
