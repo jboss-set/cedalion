@@ -76,6 +76,10 @@ class JanusBuilder extends AbstractAnsibleBuilder {
                       name("INTERNAL_GIT_REPOSITORY_URL")
                       defaultValue("git@gitlab:")
                     }
+                    stringParam {
+                      name("RELEASE_NAME")
+                      defaultValue('TEST')
+                    }
                 }
             }
         }
