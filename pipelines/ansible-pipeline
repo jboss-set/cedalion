@@ -62,6 +62,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         disableConcurrentBuilds()
         timestamps ()
+        ansiColor('xterm')
     }
 
     stages {
@@ -156,7 +157,7 @@ pipeline {
                   triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
                   triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
                 }
-                if ( isRelease() ) {
+                if ( isRelease("${env.RELEASE_NAME}") ) {
                   echo "${env.RELEASE_NAME} - set release build to keep log forever"
                   currentBuild.setKeepLog(true)
                   currentBuild.setDisplayName("${env.RELEASE_NAME}")
