@@ -46,7 +46,7 @@ def isRelease(String releaseName) {
          )
 }
 
-def triggerNextJob(String jobname) {
+def triggerNextJob(String jobname, String branch = "main") {
     if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
         script {
           echo "Trigger job ${jobname}:"
@@ -54,7 +54,7 @@ def triggerNextJob(String jobname) {
                 job: jobname,
                 parameters: [
                     string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}"),
-                    string(name: 'GIT_REPOSITORY_BRANCH', value: "${env.GIT_REPOSITORY_BRANCH}")
+                    string(name: 'GIT_REPOSITORY_BRANCH', value: branch)
                 ]
         }
     }
@@ -154,12 +154,12 @@ pipeline {
               if ( ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
                   echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
-                  triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}")
+                  triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
                 }
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
                   echo "This is a Janus job, triggering downstream jobs."
-                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
-                  triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
+                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
+                  triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
                   triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
                 }
                 if ( isRelease("${env.RELEASE_NAME}") ) {
