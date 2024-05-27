@@ -39,16 +39,24 @@ def isJanusJob() {
   return (! "null".equalsIgnoreCase("${env.JANUS_BRANCH}") && ! "null".equalsIgnoreCase("${env.JANUS_GIT_REPOSITORY_URL}") )
 }
 
-def isRelease() {
-  return (  ! "TEST".equals("${env.RELEASE_NAME}") &&
-            ! "".equals("${env.RELEASE_NAME}") &&
-            ! "${env.RELEASE_NAME}".equals("null") )
+def isRelease(String releaseName) {
+  return (  (releaseName != null) &&
+            (! "".equals(releaseName)) &&
+            (! releaseName.startsWith("TEST"))
+         )
 }
 
-def triggerNextJob(String jobname) {
+def triggerNextJob(String jobname, String branch = "main") {
     if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
-        echo "Trigger job ${jobname}:"
-        build wait: isRelease(), job: jobname, parameters: [string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}")]
+        script {
+          echo "Trigger job ${jobname}:"
+          build wait: isRelease("${env.RELEASE_NAME}"),
+                job: jobname,
+                parameters: [
+                    string(name: 'RELEASE_NAME', value: "${env.RELEASE_NAME}"),
+                    string(name: 'GIT_REPOSITORY_BRANCH', value: branch)
+                ]
+        }
     }
 }
 
@@ -59,6 +67,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         disableConcurrentBuilds()
         timestamps ()
+        ansiColor('xterm')
     }
 
     stages {
@@ -69,6 +78,7 @@ pipeline {
                     echo "JOB_NAME:[${env.JOB_NAME}]"
                     echo "SCRIPT:[${env.PATH_TO_SCRIPT}]"
                     echo "RELEASE_NAME:[${env.RELEASE_NAME}]"
+                    echo "isRelease: " + isRelease("${env.RELEASE_NAME}")
                     echo "MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL:[${env.MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL}]"
                     // warning, GIT_BRANCH var alreads points to pipeline's branch
                     if ( env.GIT_REPOSITORY_BRANCH == null || "".equals("${env.GIT_REPOSITORY_BRANCH}") ) {
@@ -82,7 +92,7 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git url: 'https://github.com/jboss-set/hera.git', branch: 'master', poll: false, changelog: false
+                  git url: 'https://github.com/guidograzioli/hera.git', branch: 'enable_ansi_colors', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
@@ -144,15 +154,15 @@ pipeline {
               if ( ! "zeus".equals("${env.PROJECT_NAME}") ) {
                 if ( "${env.JOB_NAME}".startsWith("ansible-ci") ) {
                   echo "Successful job triggers ansible-janus-${env.PROJECT_NAME}"
-                  triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}")
+                  triggerNextJob("ansible-janus-${env.PROJECT_UPSTREAM_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
                 }
                 if ( isJanusJob() && ! "${env.JOB_NAME}".endsWith("runtimes_common") ) {
                   echo "This is a Janus job, triggering downstream jobs."
-                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}")
-                  triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}")
+                  triggerNextJob("ansible-downstream-runner-${env.PROJECT_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
+                  triggerNextJob("ansible-downstream-ci-${env.PROJECT_NAME}", "${env.GIT_REPOSITORY_BRANCH}")
                   triggerNextJob("ansible-downstream-tests-${env.PROJECT_NAME}-dot")
                 }
-                if ( isRelease() ) {
+                if ( isRelease("${env.RELEASE_NAME}") ) {
                   echo "${env.RELEASE_NAME} - set release build to keep log forever"
                   currentBuild.setKeepLog(true)
                   currentBuild.setDisplayName("${env.RELEASE_NAME}")
