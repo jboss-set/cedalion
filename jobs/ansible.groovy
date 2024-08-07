@@ -131,7 +131,7 @@ EapView.jobList(this, 'Ansible Release', 'ansible-release.*')
 //
 int upstreamProjectsPortOffsetstart = 22000
 
-[ 'jws': 'jws', 'wildfly': 'eap', 'infinispan': 'data_grid', 'amq_streams': 'amq_streams'].each { project, upstreamProject -> upstreamCIJob(project, upstreamProject, upstreamProjectsPortOffsetstart++) }
+[ 'jws': 'jws', 'wildfly': 'eap', 'infinispan': 'data_grid', 'amq_streams': 'amq_streams', 'quarkus': 'quarkus'].each { project, upstreamProject -> upstreamCIJob(project, upstreamProject, upstreamProjectsPortOffsetstart++) }
 upstreamCIJob('keycloak', 'sso', upstreamProjectsPortOffsetstart++, "default,overridexml")
 upstreamCIJob('amq', 'amq_broker', upstreamProjectsPortOffsetstart++ , "default,amq_upgrade")
 moleculeJobWithGitUrl('zeus', upstreamProjectsPortOffsetstart++, 'https://github.com/jboss-set/zeus.git', 'main')
