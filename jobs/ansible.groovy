@@ -173,6 +173,7 @@ janusJob('rhbk', projectUpstreamName: 'keycloak', upstreamCollectionName: 'keycl
 janusJob('runtimes_common', projectUpstreamName: 'common')
 janusJob('amq_broker', projectUpstreamName: 'activemq', upstreamCollectionName: 'amq')
 janusJob('amq_streams', projectUpstreamName: 'amq_streams')
+janusJob('quarkus', projectUpstreamName: 'quarkus')
 janusJob('openshift', projectUpstreamName: 'okd', gitUrl: 'https://github.com/openshift/community.okd.git', setupTrigger: false)
 janusJob('ocpv', projectUpstreamName: 'kubevirt', upstreamCollectionName: 'kubevirt.core', gitUrl: 'https://github.com/kubevirt/kubevirt.core.git', setupTrigger: false)
 EapView.jobList(this, 'Ansible Janus', '^ansible-janus.*$')
