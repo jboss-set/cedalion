@@ -90,7 +90,7 @@ def demoJob(projectName, portOffset, jobPrefix = "ansible-") {
   ).build(this)
 }
 
-def downstreamRunnerJob(projectName, playbook, collections, productPaths) {
+def downstreamRunnerJob(projectName, playbook, collections = '', productPaths = '') {
   new ansible.RunnerBuilder(
         projectName: projectName,
         playbook: playbook,
@@ -187,4 +187,5 @@ downstreamRunnerJob('amq_broker', 'activemq', 'runtimes_common', '/amq/broker/7.
 downstreamRunnerJob('amq_streams', '', 'runtimes_common', '/amq/streams/2.5.1/')
 downstreamRunnerJob('rhbk', 'keycloak_quarkus', 'runtimes_common', '/keycloak/22.0.6/rhbk-22.0.6.zip')
 downstreamRunnerJob('data_grid', 'infinispan', 'runtimes_common', '/datagrid/7.3.11/jboss-datagrid-7.3.11-server.zip')
+downstreamRunnerJob('quarkus','playbook')
 EapView.jobList(this, 'Ansible Downstream Runner', '^ansible-downstream-runner-.*$')
