@@ -141,7 +141,7 @@ EapView.jobList(this, 'Ansible CI', 'ansible-ci.*')
 // CI jobs for downstream (Janus generated) collections
 //
 int downstreamProjectsPortOffsetstart = 23000
-['jws', 'eap', 'data_grid','sso', 'amq_streams'].each { project -> downstreamCIJob(project, downstreamProjectsPortOffsetstart++) }
+['jws', 'eap', 'data_grid','sso', 'amq_streams','quarkus'].each { project -> downstreamCIJob(project, downstreamProjectsPortOffsetstart++) }
 downstreamCIJob('sso', downstreamProjectsPortOffsetstart++, "default,overridexml")
 downstreamCIJob('rhbk', downstreamProjectsPortOffsetstart++, "quarkus")
 downstreamCIJob('amq_broker', downstreamProjectsPortOffsetstart++, "default,amq_upgrade")
@@ -152,7 +152,7 @@ EapView.jobList(this, 'Ansible Downstream CI', 'ansible-downstream-ci.*$')
 //
 String dotJobsPrefix = "ansible-downstream-tests-"
 int dotPortOffsetstart = 24000
-['jws', 'eap', 'sso', 'amq_broker', 'rhbk', 'amq_streams'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
+['jws', 'eap', 'sso', 'amq_broker', 'rhbk', 'amq_streams', 'quarkus'].each {  projectName -> dotJob(projectName, dotJobsPrefix, dotPortOffsetstart++) }
 EapView.jobList(this, 'Ansible DOT', dotJobsPrefix + '.*$')
 
 //
