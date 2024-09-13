@@ -1,7 +1,7 @@
 import alignment.Builder
 import alignment.channel.Builder as ChannelBuilder
 
-def defaultBinaryVersion = '1.0.4'
+def defaultBinaryVersion = '1.0.5'
 def defaultFromAddr = 'thofman@redhat.com'
 def defaultLoggerUri = 'https://component-upgrade-logger.apps.int.gpc.ocp-hub.prod.psi.redhat.com/api'
 
