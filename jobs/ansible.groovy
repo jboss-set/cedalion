@@ -116,6 +116,7 @@ releaseCollection("sso","keycloak")
 releaseCollection("rhbk","keycloak")
 releaseCollection("amq_broker","amq")
 releaseCollection("amq_streams","amq_streams")
+releaseCollection("quarkus","quarkus")
 
 //releaseCollection("runtimes_common","common")
 new ansible.AnsibleReleaseBuilder(
