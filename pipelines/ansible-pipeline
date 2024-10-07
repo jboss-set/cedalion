@@ -92,7 +92,7 @@ pipeline {
                 }
 
                 dir('hera') {
-                  git url: 'https://github.com/guidograzioli/hera.git', branch: 'enable_ansi_colors', poll: false, changelog: false
+                  git url: 'https://github.com/jboss-set/hera.git', branch: 'master', poll: false, changelog: false
                 }
 
                 dir('harmonia') {
