@@ -23,7 +23,7 @@ def upstreamBuildInRelease() {
   def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
   env.PARENT_JOB_HOME = "${parent_job_home}"
   env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
-  env.LAST_SUCCESS_FULL_BUILD_ID = currentBuild.getActions(CauseAction.class)
+  env.LAST_SUCCESS_FULL_BUILD_ID = currentBuild.rawBuild.getActions(CauseAction.class)
         .collect { actions ->
             actions.causes.find { cause ->
                 cause instanceof hudson.model.Cause.UpstreamCause
