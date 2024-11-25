@@ -18,6 +18,21 @@ def lastSuccessfullBuildOfParentJob() {
   echo "Run ${env.JOB_NAME} with last successful Janus build ${env.LAST_SUCCESS_FULL_BUILD_ID} of ${parent_jobname}."
 }
 
+def upstreamBuildInRelease() {
+  def parent_jobname = "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
+  def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
+  env.PARENT_JOB_HOME = "${parent_job_home}"
+  env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
+  env.LAST_SUCCESS_FULL_BUILD_ID = currentBuild.getActions(CauseAction.class)
+        .collect { actions ->
+            actions.causes.find { cause ->
+                cause instanceof hudson.model.Cause.UpstreamCause
+            }
+        }
+    ?.first()?.upstreamBuild
+  echo "Run ${env.JOB_NAME} with triggering Janus build ${env.LAST_SUCCESS_FULL_BUILD_ID} of ${parent_jobname}."
+}
+
 def isCopyFromParentJobRequired() {
   return "True".equalsIgnoreCase("${env.COPY_FROM_PARENT_JOB}")
 }
@@ -122,13 +137,7 @@ pipeline {
                 script {
                     if ( isCopyFromParentJobRequired() ) {
                       if ( isRelease("${env.RELEASE_NAME}") ) {
-                        def causes = currentBuild.getBuildCauses()
-                        def specificCause = currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
-                        def parent_jobname = "ansible-janus-${env.PROJECT_UPSTREAM_NAME}"
-                        def parent_job_home = "/jenkins_jobs/${parent_jobname}/"
-                        env.PARENT_JOB_HOME = "${parent_job_home}"
-                        env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
-                        env.LAST_SUCCESS_FULL_BUILD_ID = specificCause.getUpstreamBuild()
+                        upstreamBuildInRelease()
                       } else {
                         lastSuccessfullBuildOfParentJob()
                       }
