@@ -121,7 +121,15 @@ pipeline {
 
                 script {
                     if ( isCopyFromParentJobRequired() ) {
-                       lastSuccessfullBuildOfParentJob()
+                      if ( isRelease("${env.RELEASE_NAME}") ) {
+                        def causes = currentBuild.getBuildCauses()
+                        def specificCause = currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+                        env.PARENT_JOB_HOME = "${parent_job_home}"
+                        env.PARENT_JOB_BUILDS_DIR = "${parent_job_home}/permalinks"
+                        env.LAST_SUCCESS_FULL_BUILD_ID = specificCause.getUpstreamBuild()
+                      } else {
+                        lastSuccessfullBuildOfParentJob()
+                      }
                     }
                     env.BUILD_SCRIPT = "${env.WORKSPACE}/harmonia/${env.PATH_TO_SCRIPT}"
                     dumpParams("${env.WORKSPACE}/job_params.txt")
