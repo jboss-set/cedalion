@@ -62,7 +62,7 @@ def isRelease(String releaseName) {
 }
 
 def triggerNextJob(String jobname, String branch = "main") {
-    if (jenkins.model.Jenkins.instance.getItem(jobname) != null) {
+    if (jenkins.model.Jenkins.getInstanceOrNull.getItem(jobname) != null) {
         script {
           echo "Trigger job ${jobname}:"
           build wait: isRelease("${env.RELEASE_NAME}"),
