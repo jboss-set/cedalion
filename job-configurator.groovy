@@ -18,8 +18,8 @@ pipelineJob("job-configurator") {
         stringParam('JOBS_DECLARATION_REPO_BRANCH', 'main', 'Branch used for Git declaration repository (inactive in development mode)')
         stringParam('JOBDSL_INCLUDE', JOBDSL_INCLUDE, "Process only Job DSL files that are matching the regex")
     }
-   
-    // Those deprecated 'triggers' are needed until fixed https://issues.jenkins.io/browse/JENKINS-61463 
+
+    // Those deprecated 'triggers' are needed until fixed https://issues.jenkins.io/browse/JENKINS-61463
     triggers {
         scm('H/15 * * * *')
         hudsonStartupTrigger {
@@ -32,7 +32,7 @@ pipelineJob("job-configurator") {
 
     definition {
         cps {
-            script(new URL("https://raw.githubusercontent.com/jboss-set/cedalion/master/job-configurator.jenkinsfile").text)
+            script(new URL("https://raw.githubusercontent.com/jboss-set/cedalion/main/job-configurator.jenkinsfile").text)
             sandbox(true)
         }
     }
