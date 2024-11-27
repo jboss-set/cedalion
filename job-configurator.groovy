@@ -32,7 +32,7 @@ pipelineJob("job-configurator") {
 
     definition {
         cps {
-            script(new URL("https://raw.githubusercontent.com/jboss-set/cedalion/main/job-configurator.jenkinsfile").text)
+            script(new URL("https://raw.githubusercontent.com/jboss-set/cedalion/jenkins.next/job-configurator.jenkinsfile").text)
             sandbox(true)
         }
     }
