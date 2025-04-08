@@ -11,7 +11,7 @@ class AbstractAnsibleBuilder {
     String checkoutProject = "True"
     String schedule = 'H/10 * * * *'
     String harmoniaGitUrl = 'https://github.com/jboss-set/harmonia.git'
-    String harmoniaBranch = 'main'
+    String harmoniaBranch = 'popkins'
     String jobPrefix = ''
     String jobSuffix = ''
     String pipelineFile = 'pipelines/ansible-pipeline'

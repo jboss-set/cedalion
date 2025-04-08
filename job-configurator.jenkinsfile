@@ -13,7 +13,7 @@ node(LABEL) {
         checkoutDeclarationRepo()
 
         runJobDsl()
-        
+
         processResult(null)
     } catch (Exception ex) {
         processResult(ex)
@@ -48,14 +48,15 @@ private runJobDsl() {
     dir('jobs') {
         files = findFiles(glob: '')
     }
-    for (o in files) {
+    configurationHandler("jobs/ansible.groovy", "")
+    /*for (o in files) {
         String name = o.getName()
         if (o.isDirectory()) {
             directoryHandler(name, "")
         } else {
             configurationHandler(name, "")
         }
-    }
+    }*/
 
     if (JOBDSL_REMOVE_MISSING_ACTION == 'DELETE') {
         echo "INFO: Removing orphans..."

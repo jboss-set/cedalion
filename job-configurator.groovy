@@ -15,7 +15,7 @@ pipelineJob("job-configurator") {
     }
     parameters {
         stringParam('JOBS_DECLARATION_REPO', 'https://github.com/jboss-set/cedalion', 'Git cloneable URL of declaration repository (mapped volume in development mode)')
-        stringParam('JOBS_DECLARATION_REPO_BRANCH', 'main', 'Branch used for Git declaration repository (inactive in development mode)')
+        stringParam('JOBS_DECLARATION_REPO_BRANCH', 'popkins', 'Branch used for Git declaration repository (inactive in development mode)')
         stringParam('JOBDSL_INCLUDE', JOBDSL_INCLUDE, "Process only Job DSL files that are matching the regex")
     }
 
