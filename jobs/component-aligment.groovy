@@ -33,16 +33,16 @@ new Builder(jobName: 'component-alignment-wildfly-core-main',
         toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
 ).build(this)
 
-new Builder(jobName: 'component-alignment-elytron-1.x',
+new Builder(jobName: 'component-alignment-elytron',
         projectRepositoryUrl: 'https://github.com/wildfly-security/wildfly-elytron.git',
-        projectRepositoryBranch: '1.x',
+        projectRepositoryBranch: '2.x',
         configRepositoryUrl: 'https://github.com/jboss-set/alignment-report-configs.git',
         configRepositoryBranch: 'main',
         configFile: 'rules-elytron-1.x.json',
         binaryVersion: defaultBinaryVersion,
         loggerUri: defaultLoggerUri,
-        loggerCode: 'elytron-1.x',
-        subject: 'Possible component upgrades report - wildfly-elytron:1.x',
+        loggerCode: 'elytron-2.x',
+        subject: 'Possible component upgrades report - wildfly-elytron:2.x',
         fromAddr: defaultFromAddr,
         toAddr: 'wildfly-dev@lists.jboss.org,thofman@redhat.com'
 ).build(this)
