@@ -16,35 +16,25 @@ pipeline {
                     readonly SENDMAIL_URL='https://github.com/jboss-set/sendmail/releases/download/1.0.0/sendmail-1.0.0-jar-with-dependencies.jar'
                     curl -L "\${SENDMAIL_URL}" -o sendmail-jar-with-dependencies.jar
                     
-                    readonly CLI_URL='https://repository.jboss.org/nexus/content/repositories/releases/org/jboss/set/channel/wildfly-channel-cli/1.0.6/wildfly-channel-cli-1.0.6-jar-with-dependencies.jar'
-                    curl -L "\${CLI_URL}" -o wildfly-channel-cli-jar-with-dependencies.jar
+                    readonly CLI_URL='https://repository.jboss.org/nexus/content/repositories/releases/org/jboss/set/channel/wildfly-channel-cli/1.0.13/wildfly-channel-cli-1.0.13-executable.jar'
+                    curl -L "\${CLI_URL}" -o wildfly-channel-cli-executable.jar
                     
                     # Channel referencing the latest manifest published by the EAP 8 pipeline
-                    cat >channel.yaml <<EOF
----
-schemaVersion: 2.0.0
-name: "eap8-channel"
-resolve-if-no-stream: none
-blocklist:
-  url: "https://gitlab.cee.redhat.com/jboss-set/channel-definitions/-/raw/main/eap-8.0.x/latest/blocklist.yaml"
-manifest:
-  url: "https://eapdev-jenkins-csb-jbossset.apps.ocp-c1.prod.psi.redhat.com/view/EAP%208.0/job/eap-8.0/job/pipeline-jobs/job/publish-channel/lastSuccessfulBuild/artifact/eap8-manifest-proposed.yaml"
-repositories:
-  - id: "brew"
-    url: "https://download.devel.redhat.com/brewroot/repos/jb-eap-8.0-maven-build/latest/maven/"
-  - id: "indy"
-    url: "https://indy.psi.redhat.com/browse/maven/hosted/pnc-builds/"
-EOF
+                    curl -s "${env.CHANNEL_URL}" -o channel.yaml
                     """
             }
         }
         stage ('Run Report') {
             steps {
+                script {
+                    repositories = env.REPOSITORIES.trim().replaceAll("\\s*\n\\s*", ",")
+                }
+
                 sh """
                     # Generate the report and upgraded manifests
                     java -jar wildfly-channel-cli-*.jar \
                         find-upgrades file:channel.yaml \
-                        --repositories=mrrc::https://maven.repository.redhat.com/ga/,brew::https://download.eng.brq.redhat.com/brewroot/repos/jb-eap-8.0-maven-build/latest/maven/
+                        --repositories="${repositories}"
                     
                     # If the report came out empty, the file would not be generated
                     if [ -f report.html ]; then
