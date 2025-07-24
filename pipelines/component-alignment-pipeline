@@ -16,7 +16,7 @@ pipeline {
                 }
                 // download dependency updater binary
                 sh """
-                    readonly CLI_URL='https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/jboss/set/dependency-alignment/cli/${env.BINARY_VERSION}/cli-${env.BINARY_VERSION}.jar'
+                    readonly CLI_URL='https://repository.jboss.org/org/jboss/set/dependency-alignment/cli/${env.BINARY_VERSION}/cli-${env.BINARY_VERSION}.jar'
                     readonly CLI_PATH='alignment-cli-${env.BINARY_VERSION}.jar'
                     if [ ! -f "\${CLI_PATH}" ]; then
                         curl "\${CLI_URL}" -o "\${CLI_PATH}"
